@@ -1,0 +1,45 @@
+CHRLIT('f')
+Line 3, col 4: unterminated char constant
+Line 4, col 1: invalid char constant(\"\)
+Line 4, col 4: unterminated char constant
+CHRLIT('\')
+CHRLIT('?')
+Line 8, col 3: invalid char constant(\\1)
+Line 8, col 7: invalid char constant(\12)
+Line 8, col 11: invalid char constant(\123)
+Line 8, col 16: invalid char constant(\1234)
+Line 8, col 24: unterminated char constant
+Line 9, col 6: unterminated char constant
+Line 10, col 6: unterminated char constant
+Line 11, col 6: unterminated char constant
+Line 12, col 5: unterminated char constant
+Line 13, col 6: unterminated char constant
+Line 14, col 6: unterminated char constant
+Line 15, col 6: unterminated char constant
+Line 16, col 7: unterminated char constant
+Line 17, col 5: unterminated char constant
+Line 18, col 4: unterminated char constant
+Line 19, col 5: unterminated char constant
+Line 20, col 4: unterminated char constant
+Line 21, col 4: unterminated char constant
+Line 22, col 4: unterminated char constant
+Line 23, col 4: unterminated char constant
+Line 24, col 3: unterminated char constant
+Line 25, col 2: unterminated char constant
+Line 26, col 2: unterminated char constant
+Line 27, col 6: unterminated char constant
+Line 28, col 4: unterminated char constant
+Line 29, col 3: unterminated char constant
+Line 30, col 4: unterminated char constant
+Line 31, col 3: unterminated char constant
+Line 32, col 4: unterminated char constant
+Line 33, col 4: unterminated char constant
+Line 35, col 3: unterminated char constant
+Line 36, col 3: unterminated char constant
+ID(ola)
+Line 37, col 5: unterminated char constant
+ID(ola)
+ID(e)
+Line 38, col 17: unterminated char constant
+Line 39, col 3: unterminated char constant
+Line 40, col 4: unterminated char constant
