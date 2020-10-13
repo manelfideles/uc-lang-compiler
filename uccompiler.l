@@ -12,7 +12,7 @@
 CHAR        char
 ELSE        else
 WHILE       while
-OF          of
+IF          if
 INT         int
 SHORT       short
 DOUBLE      double
@@ -54,19 +54,19 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 
     /* TRATAMENTO DE COMENTÁRIOS */
 
-"/*"                        {column += yyleng; comment_start_column = column; comment_start_line = line; BEGIN COMMENT_1;}
-<COMMENT_1>"*/"             {column += yyleng; BEGIN 0;}
+"/*"                        {comment_start_column = column; comment_start_line = line; column += yyleng; BEGIN COMMENT_1;}
 <COMMENT_1>.                {column += yyleng;}
-<COMMENT_1>\r|\n|(\n\r)     {line++; column = 1;} 
+<COMMENT_1>\r|\n|(\r\n)     {line++; column = 1;} 
 <COMMENT_1><<EOF>>          {
     printf("Line %d, col %d: unterminated comment\n", comment_start_line, comment_start_column);
     column += yyleng;
     BEGIN 0;
 }
+<COMMENT_1>"*/"             {column += yyleng; BEGIN 0;}
 
 "//"                        {column += yyleng; BEGIN COMMENT_2;}
 <COMMENT_2>.                {column += yyleng;}
-<COMMENT_2>\r|\n|(\n\r)     {line++; column = 1; BEGIN 0;}
+<COMMENT_2>\r|\n|(\r\n)     {line++; column = 1; BEGIN 0;}
 
 
 {RESERVED}             {if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng;}
@@ -76,7 +76,7 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 {CHAR}                 {if(!error_mode) printf("CHAR\n"); column += yyleng;}
 {ELSE}                 {if(!error_mode) printf("ELSE\n"); column += yyleng;}
 {WHILE}                {if(!error_mode) printf("WHILE\n"); column += yyleng;}
-{OF}                   {if(!error_mode) printf("OF\n"); column += yyleng;}
+{IF}                   {if(!error_mode) printf("IF\n"); column += yyleng;}
 {INT}                  {if(!error_mode) printf("INT\n"); column += yyleng;}
 {SHORT}                {if(!error_mode) printf("SHORT\n"); column += yyleng;}
 {DOUBLE}               {if(!error_mode) printf("DOUBLE\n"); column += yyleng;}
@@ -113,7 +113,7 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 \'[^\n\r\']*\'?        {printf("Line %d, col %d: unterminated char constant\n", line, column);}
 
 " "|"\t"|"\f"          {column += yyleng;}
-"\n"|"\r"|"\r\n"       {line++; column = 1;}
+"\n"|"\r"|"\r\n"              {line++; column = 1;}
 .                      {printf("Line %d, col %d: illegal character (%c)\n", line, column, *yytext); column += yyleng;}
 
 %%
