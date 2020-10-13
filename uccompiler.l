@@ -3,12 +3,10 @@
     // Manuel Fideles 2018282990
     #include <ctype.h>
     // #define MAXSIZE 100
-    int column = 1; 
-    int line = 1;
+    int column = 1; int comment_start_column = 1;
+    int line = 1; int comment_start_line = 1;
     int error_mode = 1;         // 1 -> error mode ligado, 0 -> desligado
-    // int i = 0;                  // contador para chrlit
-    // int digit = 1;              // verificador para escape sequences do tipo /NNN (N = digito)
-    // char char_string[MAXSIZE];  // chrlit
+
 %}
 
 CHAR        char
@@ -56,19 +54,19 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 
     /* TRATAMENTO DE COMENTÁRIOS */
 
-"/*"                        {column += yyleng; BEGIN COMMENT_1;}
+"/*"                        {column += yyleng; comment_start_column = column; comment_start_line = line; BEGIN COMMENT_1;}
 <COMMENT_1>"*/"             {column += yyleng; BEGIN 0;}
 <COMMENT_1>.                {column += yyleng;}
-<COMMENT_1>[\n\r]           {line++; column = 1;} 
-<COMMENT_1><<eof>>          {
-    printf("Line %d, col %d: unterminated comment\n", line, column);
+<COMMENT_1>\r|\n|(\n\r)     {line++; column = 1;} 
+<COMMENT_1><<EOF>>          {
+    printf("Line %d, col %d: unterminated comment\n", comment_start_line, comment_start_column);
     column += yyleng;
     BEGIN 0;
 }
 
 "//"                        {column += yyleng; BEGIN COMMENT_2;}
 <COMMENT_2>.                {column += yyleng;}
-<COMMENT_2>[\n\r]           {line++; column = 1; BEGIN 0;}
+<COMMENT_2>\r|\n|(\n\r)     {line++; column = 1; BEGIN 0;}
 
 
 {RESERVED}             {if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng;}
@@ -110,8 +108,8 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 {REALLIT}              {if(!error_mode) printf("REALLIT(%s)\n", yytext); column += yyleng;}
 
     /* TRATAMENTO DE CHRLIT */
-{CHRLIT}               {printf("CHRLIT(%s)\n", yytext), column += yyleng;}
-\'([^\n\r\'\\]|\\.)*\' {printf("Line %d, col %d: invalid char constant(%s)\n", line, column, yytext); column += yyleng;}
+{CHRLIT}               {if(!error_mode) printf("CHRLIT(%s)\n", yytext), column += yyleng;}
+\'([^\n\r\'\\]|\\.)*\' {printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext); column += yyleng;}
 \'[^\n\r\']*\'?        {printf("Line %d, col %d: unterminated char constant\n", line, column);}
 
 " "|"\t"|"\f"          {column += yyleng;}
