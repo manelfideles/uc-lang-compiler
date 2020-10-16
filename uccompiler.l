@@ -2,7 +2,6 @@
     // Alexandre Santos 2018277730
     // Manuel Fideles 2018282990
     #include <ctype.h>
-    // #define MAXSIZE 100
     int column = 1; int comment_start_column = 1;
     int line = 1; int comment_start_line = 1;
     int error_mode = 1;         // 1 -> error mode ligado, 0 -> desligado
@@ -108,12 +107,12 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 {REALLIT}              {if(!error_mode) printf("REALLIT(%s)\n", yytext); column += yyleng;}
 
     /* TRATAMENTO DE CHRLIT */
-{CHRLIT}               {if(!error_mode) printf("CHRLIT(%s)\n", yytext), column += yyleng;}
+{CHRLIT}               {if(!error_mode) printf("CHRLIT(%s)\n", yytext); column += yyleng;}
 \'([^\n\r\'\\]|\\.)*\' {printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext); column += yyleng;}
 \'[^\n\r\']*\'?        {printf("Line %d, col %d: unterminated char constant\n", line, column);}
 
 " "|"\t"|"\f"          {column += yyleng;}
-"\n"|"\r"|"\r\n"              {line++; column = 1;}
+"\n"|"\r"|"\r\n"       {line++; column = 1;}
 .                      {printf("Line %d, col %d: illegal character (%c)\n", line, column, *yytext); column += yyleng;}
 
 %%
