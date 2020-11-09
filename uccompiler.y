@@ -56,7 +56,7 @@ DeclarationsAndStatements: Statement DeclarationsAndStatements
                          | Declaration
                          ;
 
-FunctionDeclaration:    Typespec FunctionDeclarator SEMI
+FunctionDeclaration:  Typespec FunctionDeclarator SEMI
                    ;
 
 FunctionDeclarator: ID LPAR ParameterList RPAR
@@ -92,16 +92,13 @@ Assignment: ID ASSIGN Expr
           ;
 
 FunctionCall: ID LPAR ArgumentsInFunction RPAR
+            | ID LPAR error RPAR
             ;
 
 ArgumentsInFunction: %empty
                    | Expr
                    | COMMA Expr
                    ;
-
-ExprAux: Expr
-       | Assignment
-       ;
 
 Expr:  FunctionCall
     |  Assignment
@@ -125,7 +122,6 @@ Expr:  FunctionCall
     |  NOT Expr
     |  PLUS Expr %prec NOT
     |  MINUS Expr %prec NOT
-    |  LPAR ExprAux RPAR
     |  ID
     |  INTLIT
     |  CHRLIT
@@ -138,7 +134,6 @@ Typespec: CHAR
         | DOUBLE
         | VOID
         ;
-
 
 %%
 
