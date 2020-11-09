@@ -14,16 +14,16 @@ typedef struct node NodePtr;
 typedef struct node {
     // AST
     NodePtr* parent;
-    NodePtr* child;
+    NodePtr* children;
 
     // Listas Ligadas (p.ex listas de argumentos)
     NodePtr* next;
-    // int child_size;
+    int n; // para contar o numero de filhos do nó
     int depth;
 
     char* value;
     NodeType type; // para diferenciar os diferentes nós
-} Node; 
+}; 
 
 #endif
 
