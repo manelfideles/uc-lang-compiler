@@ -947,7 +947,7 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 73 "uccompiler.l"
-{if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return RESERVED;}
+{if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP

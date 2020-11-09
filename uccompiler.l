@@ -69,7 +69,7 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 <COMMENT_2>\r|\n|(\r\n)     {line++; column = 1; BEGIN 0;}
 
 
-{RESERVED}             {if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return RESERVED;}
+{RESERVED}             {if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng;}
 {MINUS}                {if(!error_mode) printf("MINUS\n"); column += yyleng; return MINUS;}
 {PLUS}                 {if(!error_mode) printf("PLUS\n"); column += yyleng; return PLUS;}
 {MUL}                  {if(!error_mode) printf("MUL\n"); column += yyleng; return MUL;}

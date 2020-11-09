@@ -45,85 +45,83 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    RESERVED = 258,
-    MINUS = 259,
-    PLUS = 260,
-    MUL = 261,
-    DIV = 262,
-    MOD = 263,
-    BITWISEAND = 264,
-    BITWISEOR = 265,
-    BITWISEXOR = 266,
-    AND = 267,
-    NOT = 268,
-    OR = 269,
-    EQ = 270,
-    NE = 271,
-    LE = 272,
-    GE = 273,
-    LT = 274,
-    GT = 275,
-    CHAR = 276,
-    INT = 277,
-    SHORT = 278,
-    DOUBLE = 279,
-    VOID = 280,
-    IF = 281,
-    ELSE = 282,
-    WHILE = 283,
-    RETURN = 284,
-    ASSIGN = 285,
-    COMMA = 286,
-    LBRACE = 287,
-    RBRACE = 288,
-    LPAR = 289,
-    RPAR = 290,
-    SEMI = 291,
-    ID = 292,
-    CHRLIT = 293,
-    INTLIT = 294,
-    REALLIT = 295
+    MINUS = 258,
+    PLUS = 259,
+    MUL = 260,
+    DIV = 261,
+    MOD = 262,
+    BITWISEAND = 263,
+    BITWISEOR = 264,
+    BITWISEXOR = 265,
+    AND = 266,
+    NOT = 267,
+    OR = 268,
+    EQ = 269,
+    NE = 270,
+    LE = 271,
+    GE = 272,
+    LT = 273,
+    GT = 274,
+    CHAR = 275,
+    INT = 276,
+    SHORT = 277,
+    DOUBLE = 278,
+    VOID = 279,
+    IF = 280,
+    ELSE = 281,
+    WHILE = 282,
+    RETURN = 283,
+    ASSIGN = 284,
+    COMMA = 285,
+    LBRACE = 286,
+    RBRACE = 287,
+    LPAR = 288,
+    RPAR = 289,
+    SEMI = 290,
+    ID = 291,
+    CHRLIT = 292,
+    INTLIT = 293,
+    REALLIT = 294
   };
 #endif
 /* Tokens.  */
-#define RESERVED 258
-#define MINUS 259
-#define PLUS 260
-#define MUL 261
-#define DIV 262
-#define MOD 263
-#define BITWISEAND 264
-#define BITWISEOR 265
-#define BITWISEXOR 266
-#define AND 267
-#define NOT 268
-#define OR 269
-#define EQ 270
-#define NE 271
-#define LE 272
-#define GE 273
-#define LT 274
-#define GT 275
-#define CHAR 276
-#define INT 277
-#define SHORT 278
-#define DOUBLE 279
-#define VOID 280
-#define IF 281
-#define ELSE 282
-#define WHILE 283
-#define RETURN 284
-#define ASSIGN 285
-#define COMMA 286
-#define LBRACE 287
-#define RBRACE 288
-#define LPAR 289
-#define RPAR 290
-#define SEMI 291
-#define ID 292
-#define CHRLIT 293
-#define INTLIT 294
-#define REALLIT 295
+#define MINUS 258
+#define PLUS 259
+#define MUL 260
+#define DIV 261
+#define MOD 262
+#define BITWISEAND 263
+#define BITWISEOR 264
+#define BITWISEXOR 265
+#define AND 266
+#define NOT 267
+#define OR 268
+#define EQ 269
+#define NE 270
+#define LE 271
+#define GE 272
+#define LT 273
+#define GT 274
+#define CHAR 275
+#define INT 276
+#define SHORT 277
+#define DOUBLE 278
+#define VOID 279
+#define IF 280
+#define ELSE 281
+#define WHILE 282
+#define RETURN 283
+#define ASSIGN 284
+#define COMMA 285
+#define LBRACE 286
+#define RBRACE 287
+#define LPAR 288
+#define RPAR 289
+#define SEMI 290
+#define ID 291
+#define CHRLIT 292
+#define INTLIT 293
+#define REALLIT 294
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -135,7 +133,7 @@ union YYSTYPE
     char* str_value;
     // node_ptr
 
-#line 139 "y.tab.h" /* yacc.c:1909  */
+#line 137 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
