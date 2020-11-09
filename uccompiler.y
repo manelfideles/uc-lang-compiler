@@ -7,6 +7,8 @@
         int yylex();
         int yyerror(char *msg);
 
+        int e1, e2;
+
 
 %}
 
@@ -70,9 +72,10 @@ ParameterDeclaration: Typespec
                     | Typespec ID
                     ;
 
-Declaration:    Typespec Declarator Declaration SEMI
-           |    COMMA Declarator
+Declaration:    Typespec Declarator DeclarationAux SEMI
            ;
+DeclarationAux: COMMA Declarator DeclarationAux
+              | %empty
 
 Declarator:  ID
           |  ID ASSIGN Expr
@@ -92,7 +95,6 @@ Assignment: ID ASSIGN Expr
           ;
 
 FunctionCall: ID LPAR ArgumentsInFunction RPAR
-            | ID LPAR error RPAR
             ;
 
 ArgumentsInFunction: %empty
@@ -122,6 +124,7 @@ Expr:  FunctionCall
     |  NOT Expr
     |  PLUS Expr %prec NOT
     |  MINUS Expr %prec NOT
+    |  LPAR Expr RPAR
     |  ID
     |  INTLIT
     |  CHRLIT
@@ -137,7 +140,12 @@ Typespec: CHAR
 
 %%
 
-int yyerror(char *msg) {
-    printf("%s\n", msg);
-    return 1;
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        if(strcmp(argv[1],"-l") == 0) {
+            e1 = 0;
+        }
+    }
+    yyparse();
+    return 0;
 }

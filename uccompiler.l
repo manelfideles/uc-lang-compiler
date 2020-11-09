@@ -5,7 +5,8 @@
     #include <string.h>
     int column = 1; int comment_start_column = 1;
     int line = 1; int comment_start_line = 1;
-    int error_mode = 1;         // 1 -> error mode ligado, 0 -> desligado
+    int e1 = 1;         // 1 -> error mode ligado, 0 -> desligado
+    int e2 = 1;
 
 %}
 
@@ -69,46 +70,46 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 <COMMENT_2>\r|\n|(\r\n)     {line++; column = 1; BEGIN 0;}
 
 
-{RESERVED}             {if(!error_mode) printf("RESERVED(%s)\n", yytext); column += yyleng;}
-{MINUS}                {if(!error_mode) printf("MINUS\n"); column += yyleng; return MINUS;}
-{PLUS}                 {if(!error_mode) printf("PLUS\n"); column += yyleng; return PLUS;}
-{MUL}                  {if(!error_mode) printf("MUL\n"); column += yyleng; return MUL;}
-{CHAR}                 {if(!error_mode) printf("CHAR\n"); column += yyleng; return CHAR;}
-{ELSE}                 {if(!error_mode) printf("ELSE\n"); column += yyleng; return ELSE;}
-{WHILE}                {if(!error_mode) printf("WHILE\n"); column += yyleng; return WHILE;}
-{IF}                   {if(!error_mode) printf("IF\n"); column += yyleng; return IF;}
-{INT}                  {if(!error_mode) printf("INT\n"); column += yyleng; return INT;}
-{SHORT}                {if(!error_mode) printf("SHORT\n"); column += yyleng; return SHORT;}
-{DOUBLE}               {if(!error_mode) printf("DOUBLE\n"); column += yyleng; return DOUBLE;}
-{RETURN}               {if(!error_mode) printf("RETURN\n"); column += yyleng; return RETURN;}
-{VOID}                 {if(!error_mode) printf("VOID\n"); column += yyleng; return VOID;}
-{BITWISEAND}           {if(!error_mode) printf("BITWISEAND\n"); column += yyleng; return BITWISEAND;}
-{BITWISEOR}            {if(!error_mode) printf("BITWISEOR\n"); column += yyleng; return BITWISEOR;}
-{BITWISEXOR}           {if(!error_mode) printf("BITWISEXOR\n"); column += yyleng; return BITWISEXOR;}
-{AND}                  {if(!error_mode) printf("AND\n"); column += yyleng; return AND;}
-{ASSIGN}               {if(!error_mode) printf("ASSIGN\n"); column += yyleng; return ASSIGN;}
-{COMMA}                {if(!error_mode) printf("COMMA\n"); column += yyleng; return COMMA;}
-{DIV}                  {if(!error_mode) printf("DIV\n"); column += yyleng; return DIV;}
-{EQ}                   {if(!error_mode) printf("EQ\n"); column += yyleng; return EQ;}
-{GE}                   {if(!error_mode) printf("GE\n"); column += yyleng; return GE;}
-{GT}                   {if(!error_mode) printf("GT\n"); column += yyleng; return GT;}
-{LBRACE}               {if(!error_mode) printf("LBRACE\n"); column += yyleng; return LBRACE;}
-{LE}                   {if(!error_mode) printf("LE\n"); column += yyleng; return LE;}
-{LPAR}                 {if(!error_mode) printf("LPAR\n"); column += yyleng; return LPAR;}
-{LT}                   {if(!error_mode) printf("LT\n"); column += yyleng; return LT;}
-{MOD}                  {if(!error_mode) printf("MOD\n"); column += yyleng; return MOD;}
-{NE}                   {if(!error_mode) printf("NE\n"); column += yyleng; return NE;}
-{NOT}                  {if(!error_mode) printf("NOT\n"); column += yyleng; return NOT;}
-{OR}                   {if(!error_mode) printf("OR\n"); column += yyleng; return OR;}
-{RBRACE}               {if(!error_mode) printf("RBRACE\n"); column += yyleng; return RBRACE;}
-{RPAR}                 {if(!error_mode) printf("RPAR\n"); column += yyleng; return RPAR;}
-{SEMI}                 {if(!error_mode) printf("SEMI\n"); column += yyleng; return SEMI;}
-{ID}                   {if(!error_mode) printf("ID(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return ID;}
-{INTLIT}               {if(!error_mode) printf("INTLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return INTLIT;}
-{REALLIT}              {if(!error_mode) printf("REALLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return REALLIT;}
+{RESERVED}             {if(!e1) printf("RESERVED(%s)\n", yytext); column += yyleng;}
+{MINUS}                {if(!e1) printf("MINUS\n"); column += yyleng; return MINUS;}
+{PLUS}                 {if(!e1) printf("PLUS\n"); column += yyleng; return PLUS;}
+{MUL}                  {if(!e1) printf("MUL\n"); column += yyleng; return MUL;}
+{CHAR}                 {if(!e1) printf("CHAR\n"); column += yyleng; return CHAR;}
+{ELSE}                 {if(!e1) printf("ELSE\n"); column += yyleng; return ELSE;}
+{WHILE}                {if(!e1) printf("WHILE\n"); column += yyleng; return WHILE;}
+{IF}                   {if(!e1) printf("IF\n"); column += yyleng; return IF;}
+{INT}                  {if(!e1) printf("INT\n"); column += yyleng; return INT;}
+{SHORT}                {if(!e1) printf("SHORT\n"); column += yyleng; return SHORT;}
+{DOUBLE}               {if(!e1) printf("DOUBLE\n"); column += yyleng; return DOUBLE;}
+{RETURN}               {if(!e1) printf("RETURN\n"); column += yyleng; return RETURN;}
+{VOID}                 {if(!e1) printf("VOID\n"); column += yyleng; return VOID;}
+{BITWISEAND}           {if(!e1) printf("BITWISEAND\n"); column += yyleng; return BITWISEAND;}
+{BITWISEOR}            {if(!e1) printf("BITWISEOR\n"); column += yyleng; return BITWISEOR;}
+{BITWISEXOR}           {if(!e1) printf("BITWISEXOR\n"); column += yyleng; return BITWISEXOR;}
+{AND}                  {if(!e1) printf("AND\n"); column += yyleng; return AND;}
+{ASSIGN}               {if(!e1) printf("ASSIGN\n"); column += yyleng; return ASSIGN;}
+{COMMA}                {if(!e1) printf("COMMA\n"); column += yyleng; return COMMA;}
+{DIV}                  {if(!e1) printf("DIV\n"); column += yyleng; return DIV;}
+{EQ}                   {if(!e1) printf("EQ\n"); column += yyleng; return EQ;}
+{GE}                   {if(!e1) printf("GE\n"); column += yyleng; return GE;}
+{GT}                   {if(!e1) printf("GT\n"); column += yyleng; return GT;}
+{LBRACE}               {if(!e1) printf("LBRACE\n"); column += yyleng; return LBRACE;}
+{LE}                   {if(!e1) printf("LE\n"); column += yyleng; return LE;}
+{LPAR}                 {if(!e1) printf("LPAR\n"); column += yyleng; return LPAR;}
+{LT}                   {if(!e1) printf("LT\n"); column += yyleng; return LT;}
+{MOD}                  {if(!e1) printf("MOD\n"); column += yyleng; return MOD;}
+{NE}                   {if(!e1) printf("NE\n"); column += yyleng; return NE;}
+{NOT}                  {if(!e1) printf("NOT\n"); column += yyleng; return NOT;}
+{OR}                   {if(!e1) printf("OR\n"); column += yyleng; return OR;}
+{RBRACE}               {if(!e1) printf("RBRACE\n"); column += yyleng; return RBRACE;}
+{RPAR}                 {if(!e1) printf("RPAR\n"); column += yyleng; return RPAR;}
+{SEMI}                 {if(!e1) printf("SEMI\n"); column += yyleng; return SEMI;}
+{ID}                   {if(!e1) printf("ID(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return ID;}
+{INTLIT}               {if(!e1) printf("INTLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return INTLIT;}
+{REALLIT}              {if(!e1) printf("REALLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return REALLIT;}
 
     /* TRATAMENTO DE CHRLIT */
-{CHRLIT}               {if(!error_mode) printf("CHRLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return CHRLIT;}
+{CHRLIT}               {if(!e1) printf("CHRLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return CHRLIT;}
 \'([^\n\r\'\\]|\\.)*\' {printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext); column += yyleng;}
 \'[^\n\r\']*\'?        {printf("Line %d, col %d: unterminated char constant\n", line, column);}
 
@@ -118,14 +119,8 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 
 %%
 
-int main(int argc, char *argv[]) {
-    if (argc > 1) {
-        if(strcmp(argv[1],"-l") == 0) {
-            error_mode = 0;
-        }
-    }
-    yyparse();
-    return 0;
+void yyerror(char *s) {
+  if(e2) printf("Line %d, col %d: %s: %s\n", line,(int)(column - strlen(yytext)), s, yytext);
 }
 
 int yywrap() {
