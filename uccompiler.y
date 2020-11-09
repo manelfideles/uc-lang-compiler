@@ -2,18 +2,23 @@
         #include <stdlib.h>
         #include <stdio.h>
         #include <string.h>
+        #include "functions.h"
         #include "y.tab.h"
 
         int yylex();
         int yyerror(char *msg);
 
-        int e1, e2;
+        NodePtr* root = NULL;
+        NodePtr* current = NULL;
 
+        // FLags de erros lexicais, sintáticos, e imprimir árvore
+        int e1, e2, t;
 
 %}
 
 %union {
     char* str_value;
+
     // node_ptr
 }
 
