@@ -1,6 +1,9 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
-
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 typedef enum node_type {
     Program, VarDec, FuncDec, FuncDefini, ParamList, FuncBody, ParamDec,
     StatList, If, While, Return,
@@ -18,6 +21,7 @@ typedef struct node {
 
     // Listas Ligadas (p.ex listas de argumentos)
     NodePtr* next;
+    NodePtr* prev;
     int n; // para contar o numero de filhos do nó
     int depth;
 
@@ -28,7 +32,8 @@ typedef struct node {
 #endif
 
 NodePtr* createNode(char* value, NodeType type);
-NodePtr* appendNode(NodePtr* parent_node, NodePtr* inserted_node);
+NodePtr* psuhNode(NodePtr* parent_node, NodePtr* inserted_node);
 void printNode(NodePtr* node);
 void printTree(NodePtr* root_node); // int depth ??
 void freeTree(NodePtr* current_node);
+char* retNodeType(NodePtr* node);
