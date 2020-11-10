@@ -2176,7 +2176,7 @@ void yyfree (void * ptr )
 #line 121 "uccompiler.l"
 
 
-void yyerror(char *s) {
+void yyerror(const char *s) {
   if(e2) printf("Line %d, col %d: %s: %s\n", line,(int)(column - strlen(yytext)), s, yytext);
 }
 

@@ -128,10 +128,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "uccompiler.y" /* yacc.c:1909  */
+#line 20 "uccompiler.y" /* yacc.c:1909  */
 
     char* str_value;
-    // node_ptr
+    //NodePtr* node;
 
 #line 137 "y.tab.h" /* yacc.c:1909  */
 };
