@@ -22,10 +22,8 @@ typedef struct node {
 
 #endif
 
-NodePtr* createTree(NodePtr *root, char* type);
 NodePtr* createNode(char* type);
 NodePtr* appendNode(NodePtr* parent_node, NodePtr* inserted_node);
 void printNode(NodePtr* node);
 void printTree(NodePtr* root_node); // int depth ??
 void freeTree(NodePtr* current_node);
-char* retNodeType(NodePtr* node);
