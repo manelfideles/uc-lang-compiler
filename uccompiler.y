@@ -9,8 +9,8 @@
         int yylex();
         int yyerror(const char *s);
 
-        NodePtr* root = NULL;
-        NodePtr* current = NULL;
+        NodePtr* root;
+    
 
         // FLags de erros lexicais sintáticos e imprimir árvore
         int e1, e2, t;
@@ -25,6 +25,7 @@
 
 %union {
     char* str_value;
+    char* id_value;
     struct node *node;
 }
 
@@ -32,7 +33,7 @@
 
 %token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI
 %token<str_value> ID CHRLIT INTLIT REALLIT
-%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterDeclaration ParameterDeclarationAux Declaration DeclarationAux Declarator Statement StatementAux Assignment FunctionCall ArgumentsInFunction Expr Typespec
+%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterListAux ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementAux Assignment FunctionCall ArgumentsInFunction Expr Typespec IdToken
 
     /* prioridade mais alta em baixo mais baixa em cima */
 %left COMMA
@@ -56,44 +57,48 @@ Program: FunctionsAndDeclarations {
                                     if(debug) printf("Program\n");
                                     root = createNode("Program");
                                     $$ = root = appendNode(root, $1);
-                                    printNode(root);
                                   }
        ;
-FunctionsAndDeclarations: %empty {
-                                    if(debug) printf("FunctionsAndDeclarations: EMPTY\n");
-                                    $$ = createNode("Null");
-                                 }
+FunctionsAndDeclarations: %empty                                        {
+                                                                            if(debug) printf("FunctionsAndDeclarations: EMPTY\n");
+                                                                            $$ = createNode("Null");
+                                                                        }
                         | FunctionDefinition FunctionsAndDeclarations   {
-                                                                            if($2->type == "Null") $$ = $1;
-                                                                            else $$ = appendNode($1, $2);
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDefinition\n");
-                                                                            //printNode($$);
+                                                                            if(strcmp($2->type, "Null") != 0) {
+                                                                                $1->next = $2;
+                                                                                $$ = $1;
+                                                                            }
+                                                                            else {$$ = $1;}
                                                                         }
                         | FunctionDeclaration FunctionsAndDeclarations  {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDeclaration\n");
-                                                                            if($2->type == "Null") $$ = appendNode($1, $2);
-                                                                            //printNode($$);
+                                                                            if(strcmp($2->type, "Null") != 0) {
+                                                                                $1->next = $2;
+                                                                                $$ = $1;
+                                                                            }
+                                                                            else {$$ = $1;}
                                                                         }
                         | Declaration FunctionsAndDeclarations          {
-                                                                            if($2->type == "Null") $$ = $1;
-                                                                            else $$ = appendNode($1, $2);
                                                                             if(debug) printf("FunctionsAndDeclarations: Declaration\n");
-                                                                            //printNode($$);
+                                                                            if(strcmp($2->type, "Null") != 0) {
+                                                                                $1->next = $2;
+                                                                                $$ = $1;
+                                                                            }
+                                                                            else {$$ = $1;}
                                                                         }
                         ;
 
 FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
-                                                                $$ = appendNode($1, appendNode($2, $3));
                                                                 if(debug) printf("Function Definition: Typespec FunctionDeclarator FunctionBody\n");
-                                                                //printNode($$);
-                                                                //printf("%s %s %s\n", $1->type, $2->type, $3->type);
-                                                                //printf("cona\n");
+                                                                $1->next = $2; $2->next = $3;
+                                                                $$ = appendNode(createNode("FunctionDefinition"), $1);
                                                              }
                   ;
 
 FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
-                                                            $$ = $2;
                                                             if(debug) printf("FunctionBody: {DeclarationsAndStatements}\n");
+                                                            $$ = appendNode(createNode("FunctionBody"), $2);
                                                             //printNode($$);
                                                         }
             |   LBRACE RBRACE                           {
@@ -104,86 +109,90 @@ FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
 
 DeclarationsAndStatements: Statement DeclarationsAndStatements   {
                                                                     if(debug) printf("DeclarationsAndStatements: Statements\n");
-                                                                    //printf("%s\n", $1->type);
-                                                                    $$ = appendNode($1, $2);
-                                                                    //printNode($$);
+                                                                    $1->next = $2;
+                                                                    $$ = appendNode(createNode("Statement"), $1);
                                                                  }
                          | Declaration DeclarationsAndStatements {
                                                                     if(debug) printf("DeclarationsAndStatements: Declaration\n");
-                                                                    //printNode($$);
-                                                                    //printNode($1); printNode($2);
-                                                                    $$ = appendNode($1, $2);
+                                                                    $1->next = $2;
+                                                                    $$ = appendNode(createNode("Declaration"), $1);
                                                                  }
                          | Statement                             {
                                                                     if(debug) printf("DeclarationsAndStatements: Statement\n");
-                                                                    printf("%s\n", $1->type);
-                                                                    $$ = $1;
-                                                                    //printNode($1);
+                                                                    $$ = appendNode(createNode("Statement"), $1);
                                                                  }
                          | Declaration                           {
                                                                     if(debug) printf("DeclarationsAndStatements: Declaration\n");
-                                                                    $$ = $1;
+                                                                    $$ = appendNode(createNode("Declaration"), $1);
                                                                     //printNode($1);
                                                                  }
                          ;
 
 FunctionDeclaration:  Typespec FunctionDeclarator SEMI {
                                                             if(debug) printf("FunctionDeclaration: Typespec Function Declarator SEMI\n");
-
+                                                            $1->next = $2;
+                                                            $$ = appendNode(createNode("FunctionDeclaration"), $1);
+                                                            //printNode($$);
                                                        }
                    ;
 
-FunctionDeclarator: ID LPAR ParameterList RPAR  {
+FunctionDeclarator: IdToken LPAR ParameterList RPAR  {
                                                     if(debug) printf("FunctionDeclarator: ID (ParameterList)\n");
-                                                    $$ = appendNode(createNode("Id"), appendNode(createNode("Call"), $3));
-                                                    printNode($$);
+                                                    struct node* paramlist = createNode("ParameterList");
+                                                    paramlist = appendNode(paramlist, $3);
+                                                    $1->next = paramlist;
+                                                    $$ = $1;
+                                                    //printNode($$); printNode($$->next);
                                                 }
                   ;
 
-ParameterList:  ParameterDeclaration            {
-                                                    if(debug) printf("Parameter List: Parameter Declaration\n");
-                                                    $$ = $1;
-                                                    printNode($$);
-                                                }
-             |  COMMA ParameterList             {
-                                                    if(debug) printf("Parameter List: COMMA ParameterList\n");
-                                                    $$ = appendNode(createNode("Comma"), $2);
-                                                    printNode($$);
-                                                }
+ParameterList:  ParameterDeclaration ParameterListAux {
+                                                        if(debug) printf("Parameter List: Parameter Declaration\n");
+                                                        if(strcmp($2->type, "Null") != 0) {
+                                                            $1->next = $2;
+                                                            $$ = appendNode(createNode("ParameterDeclaration"), $1);
+                                                            //printNode($$); printNode($$->next);
+                                                        }
+                                                        else {
+                                                            $$ = appendNode(createNode("ParameterDeclaration"), $1);
+                                                        }
+                                                      }
              ;
-
-ParameterDeclaration: Typespec ParameterDeclarationAux      {
-                                                                if(debug) printf("ParameterDeclaration: TypeSpec ParameterDeclarationAux\n");
-                                                                $$ = appendNode($1, $2);
-                                                                printNode($$);
-                                                            }
-                    | Typespec ID ParameterDeclarationAux   {
-                                                                if(debug) printf("ParameterDeclaration: TypeSpec ID ParameterDeclarationAux\n");
-                                                                $$ = appendNode($1, appendNode(createNode("Id"), $3));
-                                                                printNode($$);
-                                                            }
+ParameterListAux: COMMA ParameterList     {
+                                            $$ = $2;
+                                          }
+                | %empty                  {
+                                            $$ = createNode("Null");
+                                          }
+                ;
+ParameterDeclaration: Typespec      {
+                                        if(debug) printf("ParameterDeclaration: TypeSpec ParameterDeclarationAux\n");
+                                        $$ = $1;
+                                        printNode($$);
+                                    }
+                    | Typespec IdToken   {
+                                        if(debug) printf("ParameterDeclaration: TypeSpec ID ParameterDeclarationAux\n");
+                                        $1->next = $2;
+                                        $$ = $1;
+                                    }
                     ;
-ParameterDeclarationAux: COMMA ParameterDeclaration {
-                                                        if(debug) printf("ParameterDeclarationAux: COMMA ParameterDeclaration\n");
-                                                        $$ = appendNode(createNode("Comma"), $2);
-                                                        printNode($$);
-                                                    }
-                       | %empty                     {
-                                                        if(debug) printf("ParameterDeclarationAux: EMPTY\n");
-                                                        $$ = createNode("Null");
-                                                    }
-                       ;
 
 Declaration: Typespec Declarator DeclarationAux SEMI {
                                                         if(debug) printf("Declaration: TypeSpec Declarator DeclarationAux SEMI\n");
-                                                        $$ = appendNode($1, appendNode($2, appendNode($3, createNode("Semi"))));
-                                                        printNode($$);
+                                                        if(strcmp($3->type, "Null") != 0) {
+                                                            $1->next = $2;
+                                                            $2->next = $3;
+                                                        } 
+                                                        else $1->next = $2;
+                                                        $$ = $1;
+                                                        //printNode($$);
                                                      }
            ;
 DeclarationAux: COMMA Declarator DeclarationAux {
                                                     if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
-                                                    $$ = appendNode(createNode("Comma"), appendNode($2, $3));
-                                                    printNode($$);
+                                                    if(strcmp($3->type, "Null") != 0) $$ = $2;
+                                                    else $2->next = $3;
+                                                    //printNode($$);
                                                 }
               | %empty                          {
                                                     if(debug) printf("DeclarationAux: EMPTY\n");
@@ -191,26 +200,26 @@ DeclarationAux: COMMA Declarator DeclarationAux {
                                                 }
               ;
 
-Declarator:  ID             {
+Declarator:  IdToken             {
                                 if(debug) printf("Declarator: ID\n");
-                                $$ = createNode("Id");
+                                $$ = $1;
                             }
-          |  ID ASSIGN Expr {
+          |  IdToken ASSIGN Expr {
                                 if(debug) printf("Declarator: ID ASSIGN Expr\n");
-                                struct node* aux = createNode("Store");
-                                aux = appendNode(aux, $3);
-                                $$ = appendNode(aux, createNode("Id"));
+                                struct node* store = createNode("Store");
+                                store = appendNode(store, $3);
+                                $$ = appendNode(store, $1);
                             }
           ;
 
 Statement:   Expr SEMI                                  {
                                                             if(debug) printf("Statement: Expr SEMI\n");
-                                                            printNode($1);
-                                                            $$ = appendNode($1, createNode("Semi"));
+                                                            $$ = $1;
+                                                            //printNode($$);
                                                         }
          |   SEMI                                       {
                                                             if(debug) printf("Statement: SEMI\n");
-                                                            $$ = createNode("Semi");
+                                                            //printNode($$);
                                                         }
          |   IF LPAR Expr RPAR Statement                {
                                                             if(debug) printf("Statement: IF LPAR Expr RPAR Statement\n");
@@ -226,11 +235,11 @@ Statement:   Expr SEMI                                  {
                                                         }
          |   RETURN Expr SEMI                           {
                                                             if(debug) printf("Statement: RETURN Expr SEMI\n");
-                                                            $$ = appendNode(createNode("Return"), appendNode($2, createNode("Semi")));
+                                                            $$ = appendNode(createNode("Return"), $2);
                                                         }
          |   RETURN SEMI                                {
                                                             if(debug) printf("Statement: RETURN SEMI\n");
-                                                            $$ = appendNode(createNode("Return"), createNode("Semi"));
+                                                            $$ = createNode("Return");
                                                         }
          |   LBRACE StatementAux RBRACE                 {
                                                             if(debug) printf("Statement: LBRACE Statement RBRACE \n");
@@ -239,82 +248,93 @@ Statement:   Expr SEMI                                  {
          ;
 StatementAux: Statement StatementAux {
                                         if(debug) printf("StatementAux: Statement\n");
-                                        $$ = appendNode($1, $2);
+                                        if(strcmp($2->type, "Null") != 0) {
+                                            $1->next = $2;
+                                            $$ = $1;
+                                        }
+                                        else {$$ = $1;}
+                                        //printNode($$);
                                      }
             | %empty                 {
                                         if(debug) printf("StatementAux: EMPTY\n");
                                         $$ = createNode("Null");
+                                        //printNode($$);
                                      }
             ;
 
-Assignment: ID ASSIGN Expr {
+Assignment: IdToken ASSIGN Expr {
                             if(debug) printf("Assignment: ID ASSIGN Expr\n");
-                            $$ = appendNode(appendNode(createNode("Store"), $3), createNode("Id"));
-                            printNode($$);
+                            struct node* store = createNode("Store");
+                            store = appendNode(store, $3);
+                            $$ = appendNode(store, $1);
+                            //printNode($$);
                            }
           ;
 
-FunctionCall: ID LPAR ArgumentsInFunction RPAR {
+FunctionCall: IdToken LPAR ArgumentsInFunction RPAR {
                                                 if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
-                                                $$ = appendNode(createNode("Id"), appendNode(createNode("Call"), $3));
+                                                $1->next = $3;
+                                                $$ = $3;
+                                                //printNode($$);
                                                }
             ;
 
-ArgumentsInFunction: %empty     {
-                                    if(debug) printf("ArgumentsInFunction: EMPTY\n");
-                                    $$ = createNode("Null");
-                                }
-                   | Expr       {
+ArgumentsInFunction: Expr       {
                                     if(debug) printf("ArgumentsInFunction: Expr\n");
                                     $$ = $1;
+                                    //printNode($$);
                                 }
                    | COMMA Expr {
                                     if(debug) printf("ArgumentsInFunction: COMMA Expr\n");
-                                    $$ = appendNode(createNode("Comma"), $2);
+                                    struct node* comma = createNode("Comma");
+                                    comma->next = $2;
+                                    $$ = comma;
+                                    //printNode($$);
                                 }
                    ;
 
 Expr:  FunctionCall            {
                                 if(debug) printf("Expr: FunctionCall\n");
                                 $$ = $1;
+                                //printNode($$);
                                }
     |  Assignment              {
                                 if(debug) printf("Expr: Assignment\n");
                                 $$ = $1;
-                                printNode($$);
+                                //printNode($$);
                                }
     |  Expr MUL Expr           {
-                                if(debug) printf("Expr: Expr MUL Expr\n");
+                                if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mul");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr DIV Expr           {
-                                if(debug) printf("Expr: Expr DIV Expr\n");
+                                if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Div");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr PLUS Expr          {
-                                if(debug) printf("Expr: Expr PLUS Expr\n");
+                                if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Plus");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr MINUS Expr         {
-                                if(debug) printf("Expr: Expr MINUS Expr\n");
+                                if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Minus");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr MOD Expr           {
-                                if(debug) printf("Expr: Expr MOD Expr\n");
+                                if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mod");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr AND Expr           {
-                                if(debug) printf("Expr: Expr AND Expr\n");
+                                if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("And");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
@@ -401,11 +421,9 @@ Expr:  FunctionCall            {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
                                 $$ = appendNode(createNode("Call"), $2);
                                }
-    |  ID                      {
+    |  IdToken                 {
                                 if(debug) printf("Expr: ID\n");
-                                strcpy(string, "");
-                                sprintf(string, "IntLit(%s)", yyval.str_value);
-                                $$ = createNode(strdup(string));
+                                $$ = $1;
                                }
     |  INTLIT                  {
                                 if(debug) printf("Expr: INTLIT\n");
@@ -415,14 +433,11 @@ Expr:  FunctionCall            {
                                }
     |  CHRLIT                  {
                                 if(debug) printf("Expr: CHRLIT\n");
-                                strcpy(string, "");
                                 sprintf(string, "ChrLit(%s)", yyval.str_value);
                                 $$ = createNode(strdup(string));
-                                printNode($$);
                                }
     |  REALLIT                 {
                                 if(debug) printf("Expr: REALLIT\n");
-                                strcpy(string, "");
                                 sprintf(string, "RealLit(%s)", yyval.str_value);
                                 $$ = createNode(strdup(string));
                                }
@@ -434,19 +449,6 @@ Typespec: CHAR      {$$ = createNode("Char");}
         | DOUBLE    {$$ = createNode("Double");}
         | VOID      {$$ = createNode("Void");}
         ;
+IdToken: ID {strcpy(string, ""); sprintf(string, "Id(%s)", yyval.id_value); $$ = createNode(strdup(string));}
 
 %%
-
-int main(int argc, char *argv[]) {
-    if (argc > 1) {
-        if(strcmp(argv[1], "-l") == 0) {
-            e1 = 0;
-        }
-        if(strcmp(argv[1], "-t") == 0) {
-            t = 1;
-            //printTree(root);
-        }
-    }
-    yyparse();
-    return 0;
-}

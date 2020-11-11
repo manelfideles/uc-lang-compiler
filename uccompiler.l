@@ -3,10 +3,14 @@
     // Manuel Fideles 2018282990
     #include "y.tab.h"
     #include <string.h>
+    #include "functions.h"
     int column = 1; int comment_start_column = 1;
     int line = 1; int comment_start_line = 1;
     int e1 = 1;         // 1 -> error mode ligado, 0 -> desligado
     int e2 = 1;
+    int t = 0;
+
+    NodePtr* root = NULL;
 
 %}
 
@@ -104,7 +108,7 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 {RBRACE}               {if(!e1) printf("RBRACE\n"); column += yyleng; return RBRACE;}
 {RPAR}                 {if(!e1) printf("RPAR\n"); column += yyleng; return RPAR;}
 {SEMI}                 {if(!e1) printf("SEMI\n"); column += yyleng; return SEMI;}
-{ID}                   {if(!e1) printf("ID(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return ID;}
+{ID}                   {if(!e1) printf("ID(%s)\n", yytext); column += yyleng; yylval.id_value = strdup(yytext); return ID;}
 {INTLIT}               {if(!e1) printf("INTLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return INTLIT;}
 {REALLIT}              {if(!e1) printf("REALLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return REALLIT;}
 
@@ -125,4 +129,19 @@ void yyerror(const char *s) {
 
 int yywrap() {
     return 1;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        if(strcmp(argv[1], "-l") == 0) {
+            e1 = 0;
+        }
+        if(strcmp(argv[1], "-t") == 0) {
+            t = 1;
+            yyparse();
+            printTree(root);
+        }
+    }
+    
+    return 0;
 }

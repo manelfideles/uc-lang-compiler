@@ -131,9 +131,10 @@ union YYSTYPE
 #line 26 "uccompiler.y" /* yacc.c:1909  */
 
     char* str_value;
+    char* id_value;
     struct node *node;
 
-#line 137 "y.tab.h" /* yacc.c:1909  */
+#line 138 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include "functions.h"
 
+int depth = 0;
+
 NodePtr* createNode(char* type) {
     NodePtr* new_node = (NodePtr*)malloc(sizeof(NodePtr));
 
@@ -17,31 +19,34 @@ NodePtr* createNode(char* type) {
     return new_node;
 }
 NodePtr* appendNode(NodePtr* parent_node, NodePtr* inserted_node) {
-    // adicionar a ast
+    NodePtr* aux = inserted_node;
     if(inserted_node != NULL) {
         inserted_node->parent = parent_node;
-        inserted_node->next = parent_node -> children;
+        while(aux->next) aux = aux->next;
+        aux->next = parent_node->children;
         parent_node->children = inserted_node;
-        parent_node->n++;
     }
     return parent_node;
 }
 void printNode(NodePtr* node){
+    for(int j = 0; j < depth; j++) printf("..");
     printf("%s\n", node->type);
 }
 void printTree(NodePtr* root_node){
-    int i = 0;
-    NodePtr* temp = root_node->children;
     printNode(root_node);
-    while(i < root_node->n){
-        printTree(temp);
-        temp = temp->next;
-        i++;
+    NodePtr *aux = root_node->children;
+    if(aux != NULL) {
+        depth++;
+        while(aux->next != NULL){
+            printTree(aux);
+            aux = aux->next;
+        }
+        printTree(aux);
+        depth--;
     }
 }
 void freeTree(NodePtr* current_node){
     int i = 0;
-    char * str;
     NodePtr* aux_act = NULL, *aux_next = NULL;
     aux_act = current_node->children;
     for (; i < current_node->n; i++){
