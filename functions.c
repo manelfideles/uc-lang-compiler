@@ -32,18 +32,17 @@ void printNode(NodePtr* node){
     for(int j = 0; j < depth; j++) printf("..");
     printf("%s\n", node->type);
 }
-void printTree(NodePtr* root_node){
-    printNode(root_node);
-    NodePtr *aux = root_node->children;
-    if(aux != NULL) {
-        depth++;
-        while(aux->next != NULL){
-            printTree(aux);
-            aux = aux->next;
-        }
-        printTree(aux);
-        depth--;
+void printTree(NodePtr* node){
+    NodePtr* aux_act=NULL;
+    aux_act = node->children;
+    printNode(node);
+    depth++;
+    while (aux_act!=NULL) {
+        printTree(aux_act);
+        aux_act=aux_act->next;
     }
+    depth--;
+    return;
 }
 void freeTree(NodePtr* current_node){
     int i = 0;

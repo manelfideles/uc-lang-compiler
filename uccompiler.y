@@ -9,7 +9,7 @@
         int yylex();
         int yyerror(const char *s);
 
-        NodePtr* root;
+        NodePtr* program;
     
 
         // FLags de erros lexicais sintáticos e imprimir árvore
@@ -33,7 +33,7 @@
 
 %token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI
 %token<str_value> ID CHRLIT INTLIT REALLIT
-%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterListAux ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementAux Assignment FunctionCall ArgumentsInFunction Expr Typespec IdToken
+%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterListAux ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementAux Assignment FunctionCall ArgumentsInFunction Expr Typespec IdToken DeclarationsAndStatementsAux ExprAux
 
     /* prioridade mais alta em baixo mais baixa em cima */
 %left COMMA
@@ -55,8 +55,8 @@
 %%
 Program: FunctionsAndDeclarations {
                                     if(debug) printf("Program\n");
-                                    root = createNode("Program");
-                                    $$ = root = appendNode(root, $1);
+                                    program = createNode("Program");
+                                    $$ = program = appendNode(program, $1);
                                   }
        ;
 FunctionsAndDeclarations: %empty                                        {
@@ -91,14 +91,17 @@ FunctionsAndDeclarations: %empty                                        {
 
 FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
                                                                 if(debug) printf("Function Definition: Typespec FunctionDeclarator FunctionBody\n");
-                                                                $1->next = $2; $2->next = $3;
-                                                                $$ = appendNode(createNode("FunctionDefinition"), $1);
+                                                                struct node* tmp = $2;
+                                                                while(tmp->next) tmp = tmp->next;
+                                                                $1->next = $2; tmp->next = $3;
+                                                                //printNode($1); printNode($1->next); printNode($1->next->next); printNode($1->next->next->next); 
+                                                                $$ = appendNode(createNode("FuncDefinition"), $1);
                                                              }
                   ;
 
 FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
                                                             if(debug) printf("FunctionBody: {DeclarationsAndStatements}\n");
-                                                            $$ = appendNode(createNode("FunctionBody"), $2);
+                                                            $$ = appendNode(createNode("FuncBody"), $2);
                                                             //printNode($$);
                                                         }
             |   LBRACE RBRACE                           {
@@ -107,42 +110,39 @@ FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
                                                         }
             ;
 
-DeclarationsAndStatements: Statement DeclarationsAndStatements   {
+DeclarationsAndStatements: Statement DeclarationsAndStatementsAux   {
                                                                     if(debug) printf("DeclarationsAndStatements: Statements\n");
-                                                                    $1->next = $2;
-                                                                    $$ = appendNode(createNode("Statement"), $1);
+                                                                    struct node* tmp = $1;
+                                                                    while(tmp->next) tmp = tmp->next;
+                                                                    tmp->next = $2;
+                                                                    $$ = $1;
                                                                  }
-                         | Declaration DeclarationsAndStatements {
+                         | Declaration DeclarationsAndStatementsAux {
                                                                     if(debug) printf("DeclarationsAndStatements: Declaration\n");
-                                                                    $1->next = $2;
-                                                                    $$ = appendNode(createNode("Declaration"), $1);
-                                                                 }
-                         | Statement                             {
-                                                                    if(debug) printf("DeclarationsAndStatements: Statement\n");
-                                                                    $$ = appendNode(createNode("Statement"), $1);
-                                                                 }
-                         | Declaration                           {
-                                                                    if(debug) printf("DeclarationsAndStatements: Declaration\n");
-                                                                    $$ = appendNode(createNode("Declaration"), $1);
-                                                                    //printNode($1);
+                                                                    struct node* dec = createNode("Declaration");
+                                                                    dec = appendNode(dec, $1);
+                                                                    dec->next = $2;
+                                                                    $$ = dec;
                                                                  }
                          ;
+DeclarationsAndStatementsAux: %empty                    {$$ = createNode("Null");}
+                            | DeclarationsAndStatements {$$ = $1;}
+                            ;
 
 FunctionDeclaration:  Typespec FunctionDeclarator SEMI {
                                                             if(debug) printf("FunctionDeclaration: Typespec Function Declarator SEMI\n");
                                                             $1->next = $2;
-                                                            $$ = appendNode(createNode("FunctionDeclaration"), $1);
+                                                            $$ = appendNode(createNode("FuncDeclaration"), $1);
                                                             //printNode($$);
                                                        }
                    ;
 
 FunctionDeclarator: IdToken LPAR ParameterList RPAR  {
                                                     if(debug) printf("FunctionDeclarator: ID (ParameterList)\n");
-                                                    struct node* paramlist = createNode("ParameterList");
+                                                    struct node* paramlist = createNode("ParamList");
                                                     paramlist = appendNode(paramlist, $3);
                                                     $1->next = paramlist;
                                                     $$ = $1;
-                                                    //printNode($$); printNode($$->next);
                                                 }
                   ;
 
@@ -150,11 +150,11 @@ ParameterList:  ParameterDeclaration ParameterListAux {
                                                         if(debug) printf("Parameter List: Parameter Declaration\n");
                                                         if(strcmp($2->type, "Null") != 0) {
                                                             $1->next = $2;
-                                                            $$ = appendNode(createNode("ParameterDeclaration"), $1);
+                                                            $$ = appendNode(createNode("ParamDeclaration"), $1);
                                                             //printNode($$); printNode($$->next);
                                                         }
                                                         else {
-                                                            $$ = appendNode(createNode("ParameterDeclaration"), $1);
+                                                            $$ = appendNode(createNode("ParamDeclaration"), $1);
                                                         }
                                                       }
              ;
@@ -168,7 +168,7 @@ ParameterListAux: COMMA ParameterList     {
 ParameterDeclaration: Typespec      {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ParameterDeclarationAux\n");
                                         $$ = $1;
-                                        printNode($$);
+                                        //printNode($$);
                                     }
                     | Typespec IdToken   {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ID ParameterDeclarationAux\n");
@@ -206,9 +206,8 @@ Declarator:  IdToken             {
                             }
           |  IdToken ASSIGN Expr {
                                 if(debug) printf("Declarator: ID ASSIGN Expr\n");
-                                struct node* store = createNode("Store");
-                                store = appendNode(store, $3);
-                                $$ = appendNode(store, $1);
+                                $1->next = $3;
+                                $$ = $1;
                             }
           ;
 
@@ -231,7 +230,12 @@ Statement:   Expr SEMI                                  {
                                                         }
          |   WHILE LPAR Expr RPAR Statement             {   
                                                             if(debug) printf("Statement: WHILE LPAR Expr RPAR Statement\n");
-                                                            //
+                                                            struct node* while_token = createNode("While");
+                                                            while_token = appendNode(while_token, $3);
+                                                            struct node* tmp = $3;
+                                                            while(tmp->next) tmp = tmp->next;
+                                                            tmp->next = $5;
+                                                            $$ = while_token;
                                                         }
          |   RETURN Expr SEMI                           {
                                                             if(debug) printf("Statement: RETURN Expr SEMI\n");
@@ -243,13 +247,16 @@ Statement:   Expr SEMI                                  {
                                                         }
          |   LBRACE StatementAux RBRACE                 {
                                                             if(debug) printf("Statement: LBRACE Statement RBRACE \n");
-                                                            $$ = $2;
+                                                            struct node* statlist = createNode("StatList");
+                                                            $$ = appendNode(statlist, $2);
                                                         }
          ;
 StatementAux: Statement StatementAux {
                                         if(debug) printf("StatementAux: Statement\n");
+                                        struct node* tmp = $1;
                                         if(strcmp($2->type, "Null") != 0) {
-                                            $1->next = $2;
+                                            while(tmp->next) tmp = tmp->next;
+                                            tmp->next = $2;
                                             $$ = $1;
                                         }
                                         else {$$ = $1;}
@@ -273,24 +280,33 @@ Assignment: IdToken ASSIGN Expr {
 
 FunctionCall: IdToken LPAR ArgumentsInFunction RPAR {
                                                 if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
+                                                struct node* call = createNode("Call");
                                                 $1->next = $3;
-                                                $$ = $3;
+                                                call = appendNode(call, $1);
+                                                $$ = call;
                                                 //printNode($$);
                                                }
             ;
 
-ArgumentsInFunction: Expr       {
-                                    if(debug) printf("ArgumentsInFunction: Expr\n");
-                                    $$ = $1;
-                                    //printNode($$);
-                                }
-                   | COMMA Expr {
-                                    if(debug) printf("ArgumentsInFunction: COMMA Expr\n");
-                                    struct node* comma = createNode("Comma");
-                                    comma->next = $2;
-                                    $$ = comma;
-                                    //printNode($$);
-                                }
+ArgumentsInFunction: Expr ExprAux  {
+                                        if(debug) printf("ArgumentsInFunction: Expr\n");
+                                        struct node* tmp = $1;
+                                        if(strcmp($2->type, "Null") != 0) {
+                                            while(tmp->next) tmp = tmp->next;
+                                            tmp->next = $2;
+                                            $$ = $1;
+                                        }
+                                        else {$$ = $1;}
+                                        //printNode($$);
+                                   }
+ExprAux: %empty                     {
+                                        $$ = createNode("Null");
+                                    }
+        | COMMA ArgumentsInFunction {
+                                        if(debug) printf("ArgumentsInFunction: COMMA Expr\n");
+                                        $$ = $2;
+                                        //printNode($$);
+                                    }
                    ;
 
 Expr:  FunctionCall            {
@@ -317,13 +333,13 @@ Expr:  FunctionCall            {
                                }
     |  Expr PLUS Expr          {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Plus");
+                                struct node* aux = createNode("Add");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr MINUS Expr         {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Minus");
+                                struct node* aux = createNode("Sub");
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
@@ -419,7 +435,7 @@ Expr:  FunctionCall            {
                                }
     |  LPAR Expr RPAR          {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
-                                $$ = appendNode(createNode("Call"), $2);
+                                $$ = $2;
                                }
     |  IdToken                 {
                                 if(debug) printf("Expr: ID\n");

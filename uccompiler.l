@@ -10,7 +10,7 @@
     int e2 = 1;
     int t = 0;
 
-    NodePtr* root = NULL;
+    NodePtr* program = NULL;
 
 %}
 
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
         if(strcmp(argv[1], "-t") == 0) {
             t = 1;
             yyparse();
-            printTree(root);
+            printTree(program);
         }
     }
     
