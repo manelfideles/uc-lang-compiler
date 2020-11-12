@@ -33,7 +33,7 @@
 
 %token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI
 %token<str_value> ID CHRLIT INTLIT REALLIT
-%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterListAux ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementAux FunctionCall ArgList FuncCallArgList Expr Typespec IdToken DeclarationsAndStatementsAux 
+%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterListAux ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementAux Assignment FunctionCall ArgumentsInFunction Expr Typespec IdToken DeclarationsAndStatementsAux ExprAux
 
     /* prioridade mais alta em baixo mais baixa em cima */
 %left COMMA
@@ -270,39 +270,49 @@ StatementAux: Statement StatementAux {
                                         //printNode($$);
                                      }
             ;
-     
-ArgList: Expr                               {$$ = $1;}
-       | ArgList COMMA Expr                 {
-                                                if(debug) printf("Expr: Expr COMMA Expr\n");
-                                                struct node* aux = createNode("Comma");
-                                                aux = appendNode(aux, $3);
-                                                $$ = appendNode(aux, $1);
-                                            }
 
-FuncCallArgList: Expr                       {$$ = $1;}
-               | FuncCallArgList COMMA Expr {
-                                                // COMO FAZER ?
-                                            }
+Assignment: IdToken ASSIGN Expr {
+                            if(debug) printf("Assignment: ID ASSIGN Expr\n");
+                            struct node* store = createNode("Store");
+                            store = appendNode(store, $3);
+                            $$ = appendNode(store, $1);
+                            //printNode($$);
+                           }
+          ;
 
-FunctionCall: IdToken LPAR FuncCallArgList RPAR {
-                                                    if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
-                                                    struct node* call = createNode("Call");
-                                                    $1->next = $3;
-                                                    call = appendNode(call, $1);
-                                                    $$ = call;
-                                                    //printNode($$);
-                                                }
-            | IdToken LPAR RPAR                 {}
-            | IdToken LPAR error RPAR           {$$ = NULL;}
+FunctionCall: IdToken LPAR ArgumentsInFunction RPAR {
+                                                        if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
+                                                        struct node* call = createNode("Call");
+                                                        $1->next = $3;
+                                                        call = appendNode(call, $1);
+                                                        $$ = call;
+                                                        //printNode($$);
+                                                    }
+            ;
 
+ArgumentsInFunction: Expr ExprAux  {
+                                        if(debug) printf("ArgumentsInFunction: Expr\n");
+                                        struct node* tmp = $1;
+                                        if(strcmp($2->type, "Null") != 0) {
+                                            while(tmp->next) tmp = tmp->next;
+                                            tmp->next = $1;
+                                            $$ = $1;
+                                        }
+                                        else {$$ = $1;}
+                                        //printNode($$);
+                                   }
+ExprAux: %empty                     {
+                                        $$ = createNode("Null");
+                                    }
+        | COMMA ArgumentsInFunction {
+                                        if(debug) printf("ArgumentsInFunction: COMMA Expr\n");
+                                        $$ = $2;
+                                        //printNode($$);
+                                    }
+        ;
 
-Expr:  Expr ASSIGN Expr        {
-                                    if(debug) printf("Assignment: ID ASSIGN Expr\n");
-                                    struct node* store = createNode("Store");
-                                    store = appendNode(store, $3);
-                                    $$ = appendNode(store, $1);
-                                    //printNode($$);
-                               }
+Expr:  FunctionCall            {$$ = $1;}
+    |  Assignment              {$$ = $1;}
     |  Expr MUL Expr           {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mul");
@@ -399,6 +409,12 @@ Expr:  Expr ASSIGN Expr        {
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
+    |  Expr COMMA Expr         {
+                                    //if(debug) printf("Expr: Expr COMMA Expr\n");
+                                    //struct node* aux = createNode("Comma");
+                                    //aux = appendNode(aux, $3);
+                                    //$$ = appendNode(aux, $1);
+                               }
     |  NOT Expr                {
                                 if(debug) printf("Expr: NOT Expr\n");
                                 $$ = appendNode(createNode("Not"), $2);
@@ -411,12 +427,10 @@ Expr:  Expr ASSIGN Expr        {
                                 if(debug) printf("Expr: MINUS Expr NOT\n");
                                 $$ = appendNode(createNode("Minus"), $2);
                                }
-    |  FunctionCall            {$$ = $1;}
-    |  LPAR ArgList RPAR       {
+    |  LPAR Expr RPAR          {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
                                 $$ = $2;
                                }
-    |  LPAR error RPAR         {;}
     |  IdToken                 {
                                 if(debug) printf("Expr: ID\n");
                                 $$ = $1;
