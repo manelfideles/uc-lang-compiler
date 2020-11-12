@@ -33,9 +33,9 @@
 
 %token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI
 %token<str_value> ID CHRLIT INTLIT REALLIT
-%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterListAux ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementAux FunctionCall ArgList FuncCallArgList Expr Typespec IdToken DeclarationsAndStatementsAux 
+%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementList FunctionCall ArgList FuncCallArgList Expr Typespec IdToken DeclarationsAndStatementsAux 
 
-    /* prioridade mais alta em baixo mais baixa em cima */
+    /* prioridade mais alta em baixo, mais baixa em cima */
 %left COMMA
 %right ASSIGN
 %left OR
@@ -57,8 +57,6 @@ Program: FunctionsAndDeclarations {
                                     if(debug) printf("Program\n");
                                     program = createNode("Program");
                                     $$ = program = appendNode(program, $1);
-
-                                    if(strcmp($$->type, "Null")==0) ;
                                   }
        ;
 FunctionsAndDeclarations: %empty                                        {
@@ -114,17 +112,24 @@ FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
 
 DeclarationsAndStatements: Statement DeclarationsAndStatementsAux   {
                                                                     if(debug) printf("DeclarationsAndStatements: Statements\n");
-                                                                    struct node* tmp = $1;
-                                                                    while(tmp->next) tmp = tmp->next;
-                                                                    tmp->next = $2;
-                                                                    $$ = $1;
+                                                                    if(strcmp($2->type, "Null") != 0) {
+                                                                        struct node* tmp = $1;
+                                                                        while(tmp->next) tmp = tmp->next;
+                                                                        tmp->next = $2;
+                                                                        $$ = $1;
+                                                                    }
+                                                                    else {$$ = $1;}
+                                                                    
                                                                  }
                          | Declaration DeclarationsAndStatementsAux {
                                                                     if(debug) printf("DeclarationsAndStatements: Declaration\n");
                                                                     struct node* dec = createNode("Declaration");
                                                                     dec = appendNode(dec, $1);
-                                                                    dec->next = $2;
-                                                                    $$ = dec;
+                                                                    if(strcmp($2->type, "Null") != 0) {
+                                                                        dec->next = $2;
+                                                                        $$ = dec;
+                                                                    }
+                                                                    else {$$ = dec;}
                                                                  }
                          ;
 DeclarationsAndStatementsAux: %empty                    {$$ = createNode("Null");}
@@ -148,25 +153,17 @@ FunctionDeclarator: IdToken LPAR ParameterList RPAR  {
                                                 }
                   ;
 
-ParameterList:  ParameterDeclaration ParameterListAux {
+ParameterList: ParameterDeclaration                   {
                                                         if(debug) printf("Parameter List: Parameter Declaration\n");
-                                                        if(strcmp($2->type, "Null") != 0) {
-                                                            $1->next = $2;
-                                                            $$ = appendNode(createNode("ParamDeclaration"), $1);
-                                                            //printNode($$); printNode($$->next);
-                                                        }
-                                                        else {
-                                                            $$ = appendNode(createNode("ParamDeclaration"), $1);
-                                                        }
+                                                        $$ = appendNode(createNode("ParamDeclaration"), $1);
                                                       }
+             | ParameterList COMMA ParameterDeclaration {
+                                                            struct node* tmp = $1;
+                                                            while(tmp->next != NULL) tmp = tmp->next;
+                                                            tmp->next = appendNode(createNode("ParamDeclaration"), $3);
+                                                            $$ = $1;
+                                                        }
              ;
-ParameterListAux: COMMA ParameterList     {
-                                            $$ = $2;
-                                          }
-                | %empty                  {
-                                            $$ = createNode("Null");
-                                          }
-                ;
 ParameterDeclaration: Typespec      {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ParameterDeclarationAux\n");
                                         $$ = $1;
@@ -185,10 +182,11 @@ Declaration: Typespec Declarator DeclarationAux SEMI {
                                                             $1->next = $2;
                                                             $2->next = $3;
                                                         } 
-                                                        else $1->next = $2;
+                                                        else {$1->next = $2;}
                                                         $$ = $1;
                                                         //printNode($$);
                                                      }
+            | error SEMI                             {}
            ;
 DeclarationAux: COMMA Declarator DeclarationAux {
                                                     if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
@@ -213,64 +211,134 @@ Declarator:  IdToken             {
                             }
           ;
 
-Statement:   Expr SEMI                                  {
-                                                            if(debug) printf("Statement: Expr SEMI\n");
-                                                            $$ = $1;
-                                                            //printNode($$);
+Statement:   LBRACE StatementList RBRACE      {
+                                                            if(debug) printf("Statement: LBRACE Statement RBRACE \n");
+                                                            // criar statlist
+                                                            if($2) {
+                                                                if($2->next == NULL) $$ = $2;
+                                                                else {
+                                                                    struct node* statlist = createNode("StatList");
+                                                                    statlist = appendNode(statlist, $2);
+                                                                    $$ = statlist;
+                                                                }
+                                                            }
                                                         }
-         |   SEMI                                       {
-                                                            if(debug) printf("Statement: SEMI\n");
-                                                            //printNode($$);
-                                                        }
-         |   IF LPAR Expr RPAR Statement                {
-                                                            if(debug) printf("Statement: IF LPAR Expr RPAR Statement\n");
-                                                            //
+         |   Expr SEMI                                  {$$ = $1;}
+         |   SEMI                                       {$$ = NULL;}
+         |   IF LPAR Expr RPAR Statement %prec ELSE     {
+                                                            struct node* if_aux = createNode("If");
+                                                            struct node* tmp = $3;
+                                                            while(tmp->next != NULL) {
+                                                                tmp = tmp->next;
+                                                            }
+                                                            
+                                                            if(strcmp($5->type, "Null") != 0) tmp->next = $5;
+
+                                                            if_aux = appendNode(if_aux, $3);
+                                                            $$ = if_aux;
                                                         }
          |   IF LPAR Expr RPAR Statement ELSE Statement {   
                                                             if(debug) printf("Statement: IF LPAR Expr RPAR Statement ELSE Statement\n");
-                                                            //
+                                                            struct node* if_aux = createNode("If");
+                                                            struct node* tmp = $3;
+                                                            while(tmp->next != NULL) tmp = tmp->next;
+
+                                                            if($5 && !$7) {
+                                                                struct node* tmp1 = $5;
+                                                                int k = 0;
+                                                                if(tmp1->next) k++;
+                                                                if(k == 0) {tmp->next = $5; $5->next = createNode("Null");}
+                                                                else {
+                                                                    struct node* statlist = createNode("StatList");
+                                                                    statlist->next = createNode("Null");
+                                                                    tmp->next = appendNode(statlist, $5);
+                                                                }
+                                                            }
+
+                                                            else if(!$5 && $7) {
+                                                                struct node* aux = $7;
+                                                                int i = 0;
+                                                                if(aux->next != NULL) i++;
+                                                                if(i == 0){
+                                                                    struct node* null = createNode("Null");
+                                                                    tmp->next = null;
+                                                                    null->next = $7;
+                                                                }
+                                                                else {
+                                                                    struct node* null = createNode("Null");
+                                                                    tmp->next = null;
+                                                                    struct node* statlist2 = createNode("StatList");
+                                                                    null->next = appendNode(statlist2, $7);
+                                                                }
+                                                            }
+
+                                                            else if($5 && $7) {
+                                                                struct node* tmp2 = $5;
+                                                                struct node* statlist = NULL;
+                                                                struct node* tmp3 = $7;
+                                                                struct node* statlist2 = NULL;
+                                                                int i = 0; 
+                                                                if(tmp2->next != NULL) i++;
+                                                                if(i == 0){tmp2->next = $5;}
+                                                                else {
+                                                                    statlist = appendNode(createNode("StatList"), $5);
+                                                                    tmp2->next = statlist;
+                                                                }
+
+                                                                int j = 0;
+                                                                if(tmp3->next != NULL) j++;
+                                                                if(j == 0) {
+                                                                    if(statlist) statlist->next = $7;
+                                                                    else {$5->next = $7;}
+                                                                }
+                                                                else {
+                                                                    statlist2 = appendNode(createNode("StatList"), $7);
+                                                                    if(statlist) statlist->next = statlist2;
+                                                                    else {$5->next = statlist2;}
+                                                                }
+                                                            }
+
+                                                            else {
+                                                                struct node* A = createNode("Null");
+                                                                struct node* B = createNode("Null");
+                                                                tmp->next = A;
+                                                                A->next = B;
+                                                            }
+
+                                                            if_aux = appendNode(if_aux, $3);
+                                                            $$ = if_aux;
                                                         }
          |   WHILE LPAR Expr RPAR Statement             {   
-                                                            if(debug) printf("Statement: WHILE LPAR Expr RPAR Statement\n");
                                                             struct node* while_token = createNode("While");
-                                                            while_token = appendNode(while_token, $3);
                                                             struct node* tmp = $3;
-                                                            while(tmp->next) tmp = tmp->next;
+
+                                                            while(tmp->next != NULL) tmp = tmp->next;
                                                             tmp->next = $5;
+
+                                                            while_token = appendNode(while_token, $3);
                                                             $$ = while_token;
                                                         }
-         |   RETURN Expr SEMI                           {
-                                                            if(debug) printf("Statement: RETURN Expr SEMI\n");
-                                                            $$ = appendNode(createNode("Return"), $2);
-                                                        }
-         |   RETURN SEMI                                {
-                                                            if(debug) printf("Statement: RETURN SEMI\n");
-                                                            $$ = createNode("Return");
-                                                        }
-         |   LBRACE StatementAux RBRACE                 {
-                                                            if(debug) printf("Statement: LBRACE Statement RBRACE \n");
-                                                            struct node* statlist = createNode("StatList");
-                                                            $$ = appendNode(statlist, $2);
-                                                        }
+         |   RETURN Expr SEMI                           {$$ = appendNode(createNode("Return"), $2);}
+         |   RETURN SEMI                                {$$ = createNode("Return");}
+
+         |   LBRACE error RBRACE                        {}
+         |   LBRACE RBRACE                              {}
          ;
-StatementAux: Statement StatementAux {
-                                        if(debug) printf("StatementAux: Statement\n");
-                                        struct node* tmp = $1;
-                                        if(strcmp($2->type, "Null") != 0) {
-                                            while(tmp->next) tmp = tmp->next;
-                                            tmp->next = $2;
-                                            $$ = $1;
+StatementList: StatementList Statement  {
+                                            if(!$1) $$ = $2;
+                                            else if($1 && $2) {
+                                                struct node* tmp = $1;
+                                                while(tmp->next) tmp = tmp->next;
+                                                tmp->next = $2;
+                                                $$ = $1;
+                                            }
+                                            else if($1 && !$2) $$ = $1;
+                                            else $$ = NULL;
+
                                         }
-                                        else {$$ = $1;}
-                                        //printNode($$);
-                                     }
-            | %empty                 {
-                                        if(debug) printf("StatementAux: EMPTY\n");
-                                        $$ = createNode("Null");
-                                        //printNode($$);
-                                     }
+             | Statement                {$$ = $1;}
             ;
-     
+
 ArgList: Expr                               {$$ = $1;}
        | ArgList COMMA Expr                 {
                                                 if(debug) printf("Expr: Expr COMMA Expr\n");
@@ -293,7 +361,7 @@ FunctionCall: IdToken LPAR FuncCallArgList RPAR {
                                                     //printNode($$);
                                                 }
             | IdToken LPAR RPAR                 {}
-            | IdToken LPAR error RPAR           {$$ = NULL;}
+            | IdToken LPAR error RPAR           {}
 
 
 Expr:  Expr ASSIGN Expr        {

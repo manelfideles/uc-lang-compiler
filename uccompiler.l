@@ -7,7 +7,7 @@
     int column = 1; int comment_start_column = 1;
     int line = 1; int comment_start_line = 1;
     int e1 = 1;         // 1 -> error mode ligado, 0 -> desligado
-    int e2 = 1;
+    int e2 = 0;
     int t = 0;
 
     NodePtr* program = NULL;
@@ -137,7 +137,6 @@ int main(int argc, char *argv[]) {
             e1 = 0;
         }
         if(strcmp(argv[1], "-t") == 0) {
-            t = 1;
             yyparse();
             printTree(program);
         }
