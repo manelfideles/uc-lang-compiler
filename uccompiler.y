@@ -280,14 +280,11 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                 struct node* tmp3 = $7;
                                                                 struct node* statlist2 = NULL;
                                                                 int i = 0; 
-                                                                if(tmp2 != NULL) {i++;}
-                                                                if(i == 0){tmp2->next = $5;}
+                                                                if(tmp2->next != NULL) {i++;}
+                                                                if(i == 0){tmp->next = $5;}
                                                                 else {
-                                                                    if(i > 1) {
-                                                                        statlist = appendNode(createNode("StatList"), $5);
-                                                                        tmp2->next = statlist;
-                                                                    }
-                                                                    if(i == 1) {tmp->next = $5;}
+                                                                    statlist = appendNode(createNode("StatList"), $5);
+                                                                    tmp->next = statlist;
                                                                 }
 
                                                                 int j = 0;
@@ -297,12 +294,9 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                     else {$5->next = $7;}
                                                                 }
                                                                 else {
-                                                                    if(j > 1) {
-                                                                        statlist2 = appendNode(createNode("StatList"), $7);
-                                                                        if(statlist) statlist->next = statlist2;
-                                                                        else {$5->next = statlist2;}
-                                                                    }
-                                                                    if(j == 0) {tmp->next->next = $7;}
+                                                                    statlist2 = appendNode(createNode("StatList"), $7);
+                                                                    if(statlist) statlist->next = statlist2;
+                                                                    else {$5->next = statlist2;}
                                                                 }
                                                             }
 
@@ -316,7 +310,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             if_aux = appendNode(if_aux, $3);
                                                             $$ = if_aux;
                                                         }
-         |   WHILE LPAR Expr RPAR StatementError            {   
+         |   WHILE LPAR Expr RPAR StatementError        {   
                                                             struct node* while_token = createNode("While");
                                                             struct node* tmp = $3;
 
