@@ -33,13 +33,14 @@ void printNode(NodePtr* node){
     printf("%s\n", node->type);
 }
 void printTree(NodePtr* node){
-    NodePtr* aux_act=NULL;
+    NodePtr* aux_act = NULL;
     aux_act = node->children;
     printNode(node);
+    //else printTree(node->children);
     depth++;
-    while (aux_act!=NULL) {
+    while (aux_act != NULL) {
         printTree(aux_act);
-        aux_act=aux_act->next;
+        aux_act = aux_act->next;
     }
     depth--;
     return;
