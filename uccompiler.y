@@ -33,7 +33,7 @@
 
 %token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI
 %token<str_value> ID CHRLIT INTLIT REALLIT
-%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementList FunctionCall ArgList FuncCallArgList Expr Typespec IdToken DeclarationsAndStatementsAux 
+%type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementList FunctionCall ArgList FuncCallArgList Expr Typespec IdToken DeclarationsAndStatementsAux StatementError
 
     /* prioridade mais alta em baixo, mais baixa em cima */
 %left COMMA
@@ -211,7 +211,7 @@ Declarator:  IdToken             {
                             }
           ;
 
-Statement:   LBRACE StatementList RBRACE      {
+Statement:   LBRACE StatementList RBRACE                {
                                                             if(debug) printf("Statement: LBRACE Statement RBRACE \n");
                                                             // criar statlist
                                                             if($2) {
@@ -225,7 +225,7 @@ Statement:   LBRACE StatementList RBRACE      {
                                                         }
          |   Expr SEMI                                  {$$ = $1;}
          |   SEMI                                       {$$ = NULL;}
-         |   IF LPAR Expr RPAR Statement %prec ELSE     {
+         |   IF LPAR Expr RPAR StatementError %prec ELSE     {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {
@@ -237,11 +237,12 @@ Statement:   LBRACE StatementList RBRACE      {
                                                             if_aux = appendNode(if_aux, $3);
                                                             $$ = if_aux;
                                                         }
-         |   IF LPAR Expr RPAR Statement ELSE Statement {   
+         |   IF LPAR Expr RPAR StatementError ELSE StatementError {   
                                                             if(debug) printf("Statement: IF LPAR Expr RPAR Statement ELSE Statement\n");
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) tmp = tmp->next;
+
 
                                                             if($5 && !$7) {
                                                                 struct node* tmp1 = $5;
@@ -273,16 +274,20 @@ Statement:   LBRACE StatementList RBRACE      {
                                                             }
 
                                                             else if($5 && $7) {
+                                                                //printf("%s --- %s\n", $5->type, $7->type);
                                                                 struct node* tmp2 = $5;
                                                                 struct node* statlist = NULL;
                                                                 struct node* tmp3 = $7;
                                                                 struct node* statlist2 = NULL;
                                                                 int i = 0; 
-                                                                if(tmp2->next != NULL) i++;
+                                                                if(tmp2 != NULL) {i++;}
                                                                 if(i == 0){tmp2->next = $5;}
                                                                 else {
-                                                                    statlist = appendNode(createNode("StatList"), $5);
-                                                                    tmp2->next = statlist;
+                                                                    if(i > 1) {
+                                                                        statlist = appendNode(createNode("StatList"), $5);
+                                                                        tmp2->next = statlist;
+                                                                    }
+                                                                    if(i == 1) {tmp->next = $5;}
                                                                 }
 
                                                                 int j = 0;
@@ -292,9 +297,12 @@ Statement:   LBRACE StatementList RBRACE      {
                                                                     else {$5->next = $7;}
                                                                 }
                                                                 else {
-                                                                    statlist2 = appendNode(createNode("StatList"), $7);
-                                                                    if(statlist) statlist->next = statlist2;
-                                                                    else {$5->next = statlist2;}
+                                                                    if(j > 1) {
+                                                                        statlist2 = appendNode(createNode("StatList"), $7);
+                                                                        if(statlist) statlist->next = statlist2;
+                                                                        else {$5->next = statlist2;}
+                                                                    }
+                                                                    if(j == 0) {tmp->next->next = $7;}
                                                                 }
                                                             }
 
@@ -308,7 +316,7 @@ Statement:   LBRACE StatementList RBRACE      {
                                                             if_aux = appendNode(if_aux, $3);
                                                             $$ = if_aux;
                                                         }
-         |   WHILE LPAR Expr RPAR Statement             {   
+         |   WHILE LPAR Expr RPAR StatementError            {   
                                                             struct node* while_token = createNode("While");
                                                             struct node* tmp = $3;
 
@@ -324,20 +332,22 @@ Statement:   LBRACE StatementList RBRACE      {
          |   LBRACE error RBRACE                        {}
          |   LBRACE RBRACE                              {}
          ;
-StatementList: StatementList Statement  {
-                                            if(!$1) $$ = $2;
-                                            else if($1 && $2) {
-                                                struct node* tmp = $1;
-                                                while(tmp->next) tmp = tmp->next;
-                                                tmp->next = $2;
-                                                $$ = $1;
-                                            }
-                                            else if($1 && !$2) $$ = $1;
-                                            else $$ = NULL;
+StatementList: StatementError StatementList  {
+                                                if(!$1) $$ = $2;
+                                                else if($1 && $2) {
+                                                    struct node* tmp = $1;
+                                                    while(tmp->next) tmp = tmp->next;
+                                                    tmp->next = $2;
+                                                    $$ = $1;
+                                                }
+                                                else if($1 && !$2) $$ = $1;
+                                                else $$ = NULL;
 
-                                        }
-             | Statement                {$$ = $1;}
+                                             }
+             | StatementError                {$$ = $1;}
             ;
+StatementError: Statement   {$$ = $1;}
+              | error SEMI  {$$ = NULL;}
 
 ArgList: Expr                               {$$ = $1;}
        | ArgList COMMA Expr                 {
@@ -369,7 +379,7 @@ Expr:  Expr ASSIGN Expr        {
                                     struct node* store = createNode("Store");
                                     store = appendNode(store, $3);
                                     $$ = appendNode(store, $1);
-                                    //printNode($$);
+                                    //printNode($$); printNode($$->children); printNode($$->children->next);
                                }
     |  Expr MUL Expr           {
                                 if(debug) printf("Expr: Expr OR Expr\n");
