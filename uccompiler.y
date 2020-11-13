@@ -223,16 +223,11 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
-                                                            if($5 == NULL) {
-                                                                //printf("COINA\n");
+                                                            if(!$5) {
                                                                 tmp->next = createNode("Null");
-                                                            }
-                                                            if($5){
-                                                                printNode($5);
-                                                                tmp->next = createNode("Null");
-                                                                //printf("COINA\n");
                                                             }
                                                             tmp->next = $5;
+                                                            tmp->next->next = createNode("Null");
 
                                                             $$ = appendNode(if_aux, $3);
                                                         }
@@ -309,13 +304,12 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             $$ = if_aux;
                                                         }
          |   WHILE LPAR Expr RPAR StatementError        {   
-                                                            struct node* null = createNode("Null");
                                                             struct node* while_token = createNode("While");
                                                             struct node* tmp = $3;
 
                                                             while(tmp->next != NULL) tmp = tmp->next;
                                                             if($5) tmp->next = $5;
-                                                            else tmp->next = null;
+                                                            else tmp->next = createNode("Null");
 
                                                             while_token = appendNode(while_token, $3);
                                                             $$ = while_token;
@@ -329,7 +323,7 @@ Statement:   LBRACE StatementList RBRACE                {
          |   LBRACE RBRACE                              {$$ = NULL;}
          ;
 StatementList: StatementError StatementList  {
-                                                if(!$1) $$ = $2;
+                                                /*if(!$1) $$ = $2;
                                                 else if($1 && $2) {
                                                     struct node* tmp = $1;
                                                     while(tmp->next) tmp = tmp->next;
@@ -340,7 +334,22 @@ StatementList: StatementError StatementList  {
                                                     $1->next = createNode("Null");
                                                     $$ = $1;
                                                 }
-                                                else $$ = createNode("Null");
+                                                else $$ = NULL;*/
+
+                                                if($1) {
+                                                    if($2) {
+                                                        struct node* tmp = $1;
+                                                        while(tmp->next) tmp = tmp->next;
+                                                        tmp->next = $2;
+                                                    }
+                                                    else {
+                                                        struct node* tmp = $1;
+                                                        while(tmp->next) tmp = tmp->next;
+                                                        tmp->next = NULL;
+                                                    }
+                                                    $$ = $1;
+                                                }
+                                                else $$ = $2;
 
                                              }
              | StatementError                {$$ = $1;}
