@@ -102,7 +102,7 @@
 # undef YYERROR_VERBOSE
 # define YYERROR_VERBOSE 1
 #else
-# define YYERROR_VERBOSE 1
+# define YYERROR_VERBOSE 0
 #endif
 
 /* In a future release of Bison, this section will be replaced
@@ -155,10 +155,11 @@ extern int yydebug;
     LPAR = 288,
     RPAR = 289,
     SEMI = 290,
-    ID = 291,
-    CHRLIT = 292,
-    INTLIT = 293,
-    REALLIT = 294
+    RESERVED = 291,
+    ID = 292,
+    CHRLIT = 293,
+    INTLIT = 294,
+    REALLIT = 295
   };
 #endif
 /* Tokens.  */
@@ -195,10 +196,11 @@ extern int yydebug;
 #define LPAR 288
 #define RPAR 289
 #define SEMI 290
-#define ID 291
-#define CHRLIT 292
-#define INTLIT 293
-#define REALLIT 294
+#define RESERVED 291
+#define ID 292
+#define CHRLIT 293
+#define INTLIT 294
+#define REALLIT 295
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -211,7 +213,7 @@ union YYSTYPE
     char* id_value;
     struct node *node;
 
-#line 215 "y.tab.c" /* yacc.c:355  */
+#line 217 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -228,7 +230,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 232 "y.tab.c" /* yacc.c:358  */
+#line 234 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -470,21 +472,21 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  14
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   422
+#define YYLAST   474
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  40
+#define YYNTOKENS  41
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  22
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  79
+#define YYNRULES  81
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  140
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   294
+#define YYMAXUTOK   295
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -522,25 +524,26 @@ static const yytype_uint8 yytranslate[] =
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39
+      35,    36,    37,    38,    39,    40
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    56,    56,    62,    66,    74,    82,    96,   106,   111,
-     117,   130,   143,   144,   147,   155,   164,   168,   175,   180,
-     187,   207,   209,   224,   234,   235,   238,   248,   249,   250,
-     262,   334,   347,   348,   350,   351,   353,   383,   385,   386,
-     388,   389,   396,   397,   409,   417,   418,   421,   428,   434,
-     440,   446,   452,   458,   464,   470,   476,   482,   488,   494,
-     500,   506,   512,   518,   524,   528,   532,   536,   537,   541,
-     542,   546,   552,   557,   564,   565,   566,   567,   568,   570
+       0,    54,    54,    61,    69,    77,    89,    90,    91,    94,
+     104,   109,   115,   128,   141,   142,   145,   153,   162,   166,
+     173,   178,   185,   203,   205,   217,   227,   228,   231,   241,
+     242,   243,   251,   323,   335,   336,   337,   338,   340,   357,
+     359,   360,   362,   363,   370,   371,   383,   391,   392,   395,
+     402,   408,   414,   420,   426,   432,   438,   444,   450,   456,
+     462,   468,   474,   480,   486,   492,   498,   502,   506,   510,
+     511,   515,   516,   520,   526,   531,   538,   539,   540,   541,
+     542,   544
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || 1
+#if YYDEBUG || YYERROR_VERBOSE || 0
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
@@ -549,8 +552,8 @@ static const char *const yytname[] =
   "BITWISEAND", "BITWISEOR", "BITWISEXOR", "AND", "NOT", "OR", "EQ", "NE",
   "LE", "GE", "LT", "GT", "CHAR", "INT", "SHORT", "DOUBLE", "VOID", "IF",
   "ELSE", "WHILE", "RETURN", "ASSIGN", "COMMA", "LBRACE", "RBRACE", "LPAR",
-  "RPAR", "SEMI", "ID", "CHRLIT", "INTLIT", "REALLIT", "$accept",
-  "Program", "FunctionsAndDeclarations", "FunctionDefinition",
+  "RPAR", "SEMI", "RESERVED", "ID", "CHRLIT", "INTLIT", "REALLIT",
+  "$accept", "Program", "FunctionsAndDeclarations", "FunctionDefinition",
   "FunctionBody", "DeclarationsAndStatements", "FunctionDeclaration",
   "FunctionDeclarator", "ParameterList", "ParameterDeclaration",
   "Declaration", "DeclarationAux", "Declarator", "Statement",
@@ -567,7 +570,8 @@ static const yytype_uint16 yytoknum[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,   292,   293,   294
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295
 };
 # endif
 
@@ -576,7 +580,7 @@ static const yytype_uint16 yytoknum[] =
 #define yypact_value_is_default(Yystate) \
   (!!((Yystate) == (-96)))
 
-#define YYTABLE_NINF -38
+#define YYTABLE_NINF -40
 
 #define yytable_value_is_error(Yytable_value) \
   0
@@ -585,20 +589,20 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     342,     4,   -96,   -96,   -96,   -96,   -96,    72,   -96,   342,
-     342,   342,    37,   -96,   -96,   -96,   -96,   -96,   -96,   -25,
-     -22,   -96,     8,    65,   -96,   -96,    37,   -96,   252,    58,
-     252,   252,   252,    42,    50,   245,   144,   -96,   214,   -96,
-     -96,   -96,   -96,   105,   -96,   -96,   -21,   -96,   322,    37,
-      62,   -96,    55,   322,    10,   -96,    37,   -96,   -96,   -96,
-     252,   252,   -96,   289,    35,   -96,   -96,    67,   161,    73,
-      85,   -96,   -96,   -96,   252,   -96,   252,   252,   252,   252,
-     252,   252,   252,   252,   252,   252,   252,   252,   252,   252,
-     252,   252,   252,   207,    58,   -96,   -96,    86,    13,   -96,
-     -96,   -96,   -96,    89,   -96,   -96,   -96,   322,   145,   145,
-     -96,   -96,   -96,   398,   255,   341,   381,   364,   403,   403,
-     107,   107,   107,   107,   322,    87,   -96,    88,   322,   -96,
-     200,   200,   -96,   252,   -96,    97,   -96,   322,   200,   -96
+      94,     4,   -96,   -96,   -96,   -96,   -96,    68,   -96,   349,
+     354,   359,    32,   -96,   -96,   -96,   -96,   -96,   -96,   -25,
+     -22,   -96,     8,    69,   -96,   -96,    32,   -96,   258,   102,
+     258,   258,   258,    47,    51,   248,   149,   -96,   226,   -96,
+     -96,   -96,   -96,   109,   -96,   -96,   -21,   -96,   329,    32,
+      52,   -96,    59,   329,    10,   -96,    32,   -96,   -96,   -96,
+     258,   258,   -96,   296,    42,   -96,   -96,    66,   166,    65,
+      41,   -96,   -96,   -96,   258,   -96,   258,   258,   258,   258,
+     258,   258,   258,   258,   258,   258,   258,   258,   258,   258,
+     258,   258,   258,   216,   102,   -96,   -96,    48,    13,   -96,
+     -96,   -96,   -96,    76,   -96,   -96,   -96,   329,   157,   157,
+     -96,   -96,   -96,   438,   415,   432,   398,   381,   455,   455,
+     151,   151,   151,   151,   329,    85,   -96,    49,   329,   -96,
+     206,   206,   -96,   258,   -96,    77,   -96,   329,   206,   -96
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -606,27 +610,27 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,    74,    75,    76,    77,    78,     0,     2,     0,
-       0,     0,     0,    21,     1,     4,     5,     6,    79,     0,
-       0,    23,    24,     0,    14,     7,     0,    20,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     9,     0,    28,
-      72,    71,    73,     0,    12,    13,     0,    67,    40,     0,
-      70,    22,    24,    25,     0,    16,    18,    66,    65,    64,
-       0,     0,    33,     0,     0,    35,    38,     0,     0,     0,
-       0,     8,    11,    10,     0,    27,     0,     0,     0,     0,
+       0,     0,    76,    77,    78,    79,    80,     0,     2,     0,
+       0,     0,     0,    23,     1,     3,     4,     5,    81,     0,
+       0,    25,    26,     0,    16,     9,     0,    22,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,    11,     0,    30,
+      74,    73,    75,     0,    14,    15,     0,    69,    42,     0,
+      72,    24,    26,    27,     0,    18,    20,    68,    67,    66,
+       0,     0,    35,     0,     0,    37,    40,     0,     0,     0,
+       0,    10,    13,    12,     0,    29,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    19,     0,     0,    32,
-      34,    39,    26,     0,    36,    69,    68,    41,    51,    50,
-      48,    49,    52,    55,    56,    57,    53,    54,    58,    59,
-      62,    60,    63,    61,    47,     0,    45,     0,    42,    17,
-       0,     0,    46,     0,    44,    29,    31,    43,     0,    30
+       0,     0,     0,     0,     0,    17,    21,     0,     0,    34,
+      36,    41,    28,     0,    38,    71,    70,    43,    53,    52,
+      50,    51,    54,    57,    58,    59,    55,    56,    60,    61,
+      64,    62,    65,    63,    49,     0,    47,     0,    44,    19,
+       0,     0,    48,     0,    46,    31,    33,    45,     0,    32
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -96,   -96,   148,   -96,   -96,   -96,   -96,   -96,   -96,    40,
-      48,   -96,   109,    51,    63,   -95,   -26,   -96,   -96,   -28,
+     -96,   -96,   162,   -96,   -96,   -96,   -96,   -96,   -96,    26,
+      43,   -96,   101,    44,    60,   -95,   -26,   -96,   -96,   -28,
      -18,   -11
 };
 
@@ -649,43 +653,48 @@ static const yytype_int16 yytable[] =
       89,    90,    91,    98,    97,   135,   136,    28,    52,    13,
       94,    29,    92,   139,    95,    96,   107,   131,   108,   109,
      110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   128,     1,   100,    30,    31,
-     101,    44,    14,    18,    45,    60,    56,    32,     2,     3,
-       4,     5,     6,    61,    28,     2,     3,     4,     5,     6,
-      33,    72,    34,    35,    73,    93,    36,    37,    38,   102,
-      39,    18,    40,    41,    42,   137,     1,   105,    30,    31,
-      76,    77,    78,    79,    80,    74,    74,    32,   133,   106,
-     130,   132,   134,   138,   101,     2,     3,     4,     5,     6,
-      33,   104,    34,    35,   129,    51,    36,    71,    38,     0,
-      39,    18,    40,    41,    42,    64,     0,    30,    31,     0,
-      78,    79,    80,     0,     0,     0,    32,    15,    16,    17,
-       0,     0,   103,     0,    30,    31,     0,     0,     0,    33,
-       0,    34,    35,    32,     0,    36,    65,    38,     0,    39,
-      18,    40,    41,    42,     0,     0,    33,     0,    34,    35,
-       0,     0,    36,   -37,    38,     0,    39,    18,    40,    41,
-      42,   103,     0,    30,    31,     0,     0,     0,   125,     0,
-      30,    31,    32,     0,     0,    69,     0,    30,    31,    32,
-       0,     0,     0,     0,     0,    33,    32,    34,    35,     0,
-       0,    36,     0,    38,     0,    39,    18,    40,    41,    42,
-      38,   126,     0,    18,    40,    41,    42,    38,    30,    31,
-      18,    40,    41,    42,     0,    30,    31,    32,    76,    77,
-      78,    79,    80,    81,    32,    83,     0,     0,     0,    86,
-      87,    88,    89,    90,    91,     0,     0,     0,    38,     0,
-      62,    18,    40,    41,    42,    38,     0,     0,    18,    40,
-      41,    42,    76,    77,    78,    79,    80,    81,    82,    83,
-      84,     0,    85,    86,    87,    88,    89,    90,    91,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    92,     0,
-       0,     0,     0,     0,    99,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,     0,    85,    86,    87,    88,    89,
-      90,    91,    -3,     1,    76,    77,    78,    79,    80,    81,
-       0,    92,     0,     0,     0,    86,    87,    88,    89,    90,
-      91,     0,     2,     3,     4,     5,     6,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,     0,     0,    86,    87,
-      88,    89,    90,    91,    76,    77,    78,    79,    80,    81,
-      82,    83,     0,     0,     0,    86,    87,    88,    89,    90,
-      91,    76,    77,    78,    79,    80,    76,    77,    78,    79,
-      80,     0,    86,    87,    88,    89,    90,    91,     0,    88,
-      89,    90,    91
+     120,   121,   122,   123,   124,   128,    44,    45,    14,    18,
+       1,    74,    30,    31,   100,   106,    56,   101,    74,   133,
+      60,    32,   130,   134,    61,    93,    72,    73,    28,     2,
+       3,     4,     5,     6,    33,     1,    34,    35,   102,   105,
+      36,    37,    38,   138,    39,   137,    18,    40,    41,    42,
+       1,   101,    30,    31,     2,     3,     4,     5,     6,   132,
+     129,    32,     2,     3,     4,     5,     6,    51,   104,     2,
+       3,     4,     5,     6,    33,     0,    34,    35,     0,     0,
+      36,    71,    38,     0,    39,     0,    18,    40,    41,    42,
+      64,     0,    30,    31,    76,    77,    78,    79,    80,     0,
+       0,    32,    78,    79,    80,     0,     0,   103,     0,    30,
+      31,    15,    16,    17,    33,     0,    34,    35,    32,     0,
+      36,    65,    38,     0,    39,     0,    18,    40,    41,    42,
+       0,    33,     0,    34,    35,     0,     0,    36,   -39,    38,
+       0,    39,     0,    18,    40,    41,    42,   103,     0,    30,
+      31,     0,     0,     0,     0,     0,     0,   125,    32,    30,
+      31,     0,     0,     0,     0,     0,     0,    69,    32,    30,
+      31,    33,     0,    34,    35,     0,     0,    36,    32,    38,
+       0,    39,     0,    18,    40,    41,    42,     0,     0,    38,
+     126,    30,    31,    18,    40,    41,    42,     0,     0,    38,
+      32,    30,    31,    18,    40,    41,    42,     0,     0,     0,
+      32,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    38,     0,    62,     0,    18,    40,    41,    42,     0,
+       0,    38,     0,     0,     0,    18,    40,    41,    42,    76,
+      77,    78,    79,    80,    81,    82,    83,    84,     0,    85,
+      86,    87,    88,    89,    90,    91,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    92,     0,     0,     0,     0,
+       0,    99,    76,    77,    78,    79,    80,    81,    82,    83,
+      84,     0,    85,    86,    87,    88,    89,    90,    91,    -6,
+       1,     0,     0,     0,    -7,     1,     0,     0,    92,    -8,
+       1,     0,     0,     0,     0,     0,     0,     0,     0,     2,
+       3,     4,     5,     6,     2,     3,     4,     5,     6,     2,
+       3,     4,     5,     6,    76,    77,    78,    79,    80,    81,
+      82,    83,    84,     0,     0,    86,    87,    88,    89,    90,
+      91,    76,    77,    78,    79,    80,    81,    82,    83,     0,
+       0,     0,    86,    87,    88,    89,    90,    91,    76,    77,
+      78,    79,    80,    81,     0,    83,     0,     0,     0,    86,
+      87,    88,    89,    90,    91,    76,    77,    78,    79,    80,
+      81,    76,    77,    78,    79,    80,    86,    87,    88,    89,
+      90,    91,    86,    87,    88,    89,    90,    91,    76,    77,
+      78,    79,    80,     0,     0,     0,     0,     0,     0,     0,
+       0,    88,    89,    90,    91
 };
 
 static const yytype_int16 yycheck[] =
@@ -696,89 +705,96 @@ static const yytype_int16 yycheck[] =
       17,    18,    19,    61,    60,   130,   131,    29,    49,    35,
       30,    33,    29,   138,    34,    56,    74,    34,    76,    77,
       78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,     1,    32,     3,     4,
-      35,    23,     0,    36,    23,    33,    94,    12,    20,    21,
-      22,    23,    24,    33,    29,    20,    21,    22,    23,    24,
-      25,    43,    27,    28,    43,    33,    31,    32,    33,    32,
-      35,    36,    37,    38,    39,   133,     1,    34,     3,     4,
-       3,     4,     5,     6,     7,    30,    30,    12,    30,    34,
-      34,    34,    34,    26,    35,    20,    21,    22,    23,    24,
-      25,    68,    27,    28,    94,    26,    31,    32,    33,    -1,
-      35,    36,    37,    38,    39,     1,    -1,     3,     4,    -1,
-       5,     6,     7,    -1,    -1,    -1,    12,     9,    10,    11,
-      -1,    -1,     1,    -1,     3,     4,    -1,    -1,    -1,    25,
-      -1,    27,    28,    12,    -1,    31,    32,    33,    -1,    35,
-      36,    37,    38,    39,    -1,    -1,    25,    -1,    27,    28,
-      -1,    -1,    31,    32,    33,    -1,    35,    36,    37,    38,
-      39,     1,    -1,     3,     4,    -1,    -1,    -1,     1,    -1,
-       3,     4,    12,    -1,    -1,     1,    -1,     3,     4,    12,
-      -1,    -1,    -1,    -1,    -1,    25,    12,    27,    28,    -1,
-      -1,    31,    -1,    33,    -1,    35,    36,    37,    38,    39,
-      33,    34,    -1,    36,    37,    38,    39,    33,     3,     4,
-      36,    37,    38,    39,    -1,     3,     4,    12,     3,     4,
-       5,     6,     7,     8,    12,    10,    -1,    -1,    -1,    14,
-      15,    16,    17,    18,    19,    -1,    -1,    -1,    33,    -1,
-      35,    36,    37,    38,    39,    33,    -1,    -1,    36,    37,
-      38,    39,     3,     4,     5,     6,     7,     8,     9,    10,
-      11,    -1,    13,    14,    15,    16,    17,    18,    19,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    29,    -1,
-      -1,    -1,    -1,    -1,    35,     3,     4,     5,     6,     7,
-       8,     9,    10,    11,    -1,    13,    14,    15,    16,    17,
-      18,    19,     0,     1,     3,     4,     5,     6,     7,     8,
-      -1,    29,    -1,    -1,    -1,    14,    15,    16,    17,    18,
-      19,    -1,    20,    21,    22,    23,    24,     3,     4,     5,
-       6,     7,     8,     9,    10,    11,    -1,    -1,    14,    15,
-      16,    17,    18,    19,     3,     4,     5,     6,     7,     8,
-       9,    10,    -1,    -1,    -1,    14,    15,    16,    17,    18,
-      19,     3,     4,     5,     6,     7,     3,     4,     5,     6,
-       7,    -1,    14,    15,    16,    17,    18,    19,    -1,    16,
-      17,    18,    19
+      88,    89,    90,    91,    92,    93,    23,    23,     0,    37,
+       1,    30,     3,     4,    32,    34,    94,    35,    30,    30,
+      33,    12,    34,    34,    33,    33,    43,    43,    29,    20,
+      21,    22,    23,    24,    25,     1,    27,    28,    32,    34,
+      31,    32,    33,    26,    35,   133,    37,    38,    39,    40,
+       1,    35,     3,     4,    20,    21,    22,    23,    24,    34,
+      94,    12,    20,    21,    22,    23,    24,    26,    68,    20,
+      21,    22,    23,    24,    25,    -1,    27,    28,    -1,    -1,
+      31,    32,    33,    -1,    35,    -1,    37,    38,    39,    40,
+       1,    -1,     3,     4,     3,     4,     5,     6,     7,    -1,
+      -1,    12,     5,     6,     7,    -1,    -1,     1,    -1,     3,
+       4,     9,    10,    11,    25,    -1,    27,    28,    12,    -1,
+      31,    32,    33,    -1,    35,    -1,    37,    38,    39,    40,
+      -1,    25,    -1,    27,    28,    -1,    -1,    31,    32,    33,
+      -1,    35,    -1,    37,    38,    39,    40,     1,    -1,     3,
+       4,    -1,    -1,    -1,    -1,    -1,    -1,     1,    12,     3,
+       4,    -1,    -1,    -1,    -1,    -1,    -1,     1,    12,     3,
+       4,    25,    -1,    27,    28,    -1,    -1,    31,    12,    33,
+      -1,    35,    -1,    37,    38,    39,    40,    -1,    -1,    33,
+      34,     3,     4,    37,    38,    39,    40,    -1,    -1,    33,
+      12,     3,     4,    37,    38,    39,    40,    -1,    -1,    -1,
+      12,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    33,    -1,    35,    -1,    37,    38,    39,    40,    -1,
+      -1,    33,    -1,    -1,    -1,    37,    38,    39,    40,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    -1,    13,
+      14,    15,    16,    17,    18,    19,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    29,    -1,    -1,    -1,    -1,
+      -1,    35,     3,     4,     5,     6,     7,     8,     9,    10,
+      11,    -1,    13,    14,    15,    16,    17,    18,    19,     0,
+       1,    -1,    -1,    -1,     0,     1,    -1,    -1,    29,     0,
+       1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    20,
+      21,    22,    23,    24,    20,    21,    22,    23,    24,    20,
+      21,    22,    23,    24,     3,     4,     5,     6,     7,     8,
+       9,    10,    11,    -1,    -1,    14,    15,    16,    17,    18,
+      19,     3,     4,     5,     6,     7,     8,     9,    10,    -1,
+      -1,    -1,    14,    15,    16,    17,    18,    19,     3,     4,
+       5,     6,     7,     8,    -1,    10,    -1,    -1,    -1,    14,
+      15,    16,    17,    18,    19,     3,     4,     5,     6,     7,
+       8,     3,     4,     5,     6,     7,    14,    15,    16,    17,
+      18,    19,    14,    15,    16,    17,    18,    19,     3,     4,
+       5,     6,     7,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    16,    17,    18,    19
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     1,    20,    21,    22,    23,    24,    41,    42,    43,
-      46,    50,    60,    35,     0,    42,    42,    42,    36,    47,
-      51,    52,    61,    31,    35,    44,    30,    35,    29,    33,
+       0,     1,    20,    21,    22,    23,    24,    42,    43,    44,
+      47,    51,    61,    35,     0,    43,    43,    43,    37,    48,
+      52,    53,    62,    31,    35,    45,    30,    35,    29,    33,
        3,     4,    12,    25,    27,    28,    31,    32,    33,    35,
-      37,    38,    39,    45,    50,    53,    56,    58,    59,    60,
-      61,    52,    61,    59,    48,    49,    60,    59,    59,    59,
-      33,    33,    35,    59,     1,    32,    53,    54,    55,     1,
-      56,    32,    50,    53,    30,    35,     3,     4,     5,     6,
+      38,    39,    40,    46,    51,    54,    57,    59,    60,    61,
+      62,    53,    62,    60,    49,    50,    61,    60,    60,    60,
+      33,    33,    35,    60,     1,    32,    54,    55,    56,     1,
+      57,    32,    51,    54,    30,    35,     3,     4,     5,     6,
        7,     8,     9,    10,    11,    13,    14,    15,    16,    17,
-      18,    19,    29,    33,    30,    34,    61,    56,    59,    35,
-      32,    35,    32,     1,    54,    34,    34,    59,    59,    59,
-      59,    59,    59,    59,    59,    59,    59,    59,    59,    59,
-      59,    59,    59,    59,    59,     1,    34,    57,    59,    49,
-      34,    34,    34,    30,    34,    55,    55,    59,    26,    55
+      18,    19,    29,    33,    30,    34,    62,    57,    60,    35,
+      32,    35,    32,     1,    55,    34,    34,    60,    60,    60,
+      60,    60,    60,    60,    60,    60,    60,    60,    60,    60,
+      60,    60,    60,    60,    60,     1,    34,    58,    60,    50,
+      34,    34,    34,    30,    34,    56,    56,    60,    26,    56
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    40,    41,    42,    42,    42,    42,    43,    44,    44,
-      45,    45,    45,    45,    46,    47,    48,    48,    49,    49,
-      50,    50,    51,    51,    52,    52,    53,    53,    53,    53,
-      53,    53,    53,    53,    53,    53,    54,    54,    55,    55,
-      56,    56,    57,    57,    58,    58,    58,    59,    59,    59,
-      59,    59,    59,    59,    59,    59,    59,    59,    59,    59,
-      59,    59,    59,    59,    59,    59,    59,    59,    59,    59,
-      59,    59,    59,    59,    60,    60,    60,    60,    60,    61
+       0,    41,    42,    43,    43,    43,    43,    43,    43,    44,
+      45,    45,    46,    46,    46,    46,    47,    48,    49,    49,
+      50,    50,    51,    51,    52,    52,    53,    53,    54,    54,
+      54,    54,    54,    54,    54,    54,    54,    54,    55,    55,
+      56,    56,    57,    57,    58,    58,    59,    59,    59,    60,
+      60,    60,    60,    60,    60,    60,    60,    60,    60,    60,
+      60,    60,    60,    60,    60,    60,    60,    60,    60,    60,
+      60,    60,    60,    60,    60,    60,    61,    61,    61,    61,
+      61,    62
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     0,     2,     2,     2,     3,     3,     2,
-       2,     2,     1,     1,     3,     4,     1,     3,     1,     2,
-       3,     2,     3,     1,     1,     3,     3,     2,     1,     5,
-       7,     5,     3,     2,     3,     2,     2,     1,     1,     2,
-       1,     3,     1,     3,     4,     3,     4,     3,     3,     3,
+       0,     2,     1,     2,     2,     2,     1,     1,     1,     3,
+       3,     2,     2,     2,     1,     1,     3,     4,     1,     3,
+       1,     2,     3,     2,     3,     1,     1,     3,     3,     2,
+       1,     5,     7,     5,     3,     2,     3,     2,     2,     1,
+       1,     2,     1,     3,     1,     3,     4,     3,     4,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     2,     2,     2,     1,     3,     3,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1
+       3,     3,     3,     3,     3,     3,     2,     2,     2,     1,
+       3,     3,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1
 };
 
 
@@ -1455,26 +1471,18 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 56 "uccompiler.y" /* yacc.c:1646  */
+#line 54 "uccompiler.y" /* yacc.c:1646  */
     {
-                                    if(debug) printf("Program\n");
-                                    program = createNode("Program");
-                                    (yyval.node) = program = appendNode(program, (yyvsp[0].node));
+                                    if(strcmp((yyvsp[0].node)->type, "Null") != 0) {
+                                        program = createNode("Program");
+                                        (yyval.node) = program = appendNode(program, (yyvsp[0].node));
+                                    }
                                   }
-#line 1465 "y.tab.c" /* yacc.c:1646  */
+#line 1482 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 62 "uccompiler.y" /* yacc.c:1646  */
-    {
-                                                                            if(debug) printf("FunctionsAndDeclarations: EMPTY\n");
-                                                                            (yyval.node) = createNode("Null");
-                                                                        }
-#line 1474 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 4:
-#line 66 "uccompiler.y" /* yacc.c:1646  */
+#line 61 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDefinition\n");
                                                                             if(strcmp((yyvsp[0].node)->type, "Null") != 0) {
@@ -1483,11 +1491,11 @@ yyreduce:
                                                                             }
                                                                             else {(yyval.node) = (yyvsp[-1].node);}
                                                                         }
-#line 1487 "y.tab.c" /* yacc.c:1646  */
+#line 1495 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 5:
-#line 74 "uccompiler.y" /* yacc.c:1646  */
+  case 4:
+#line 69 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDeclaration\n");
                                                                             if(strcmp((yyvsp[0].node)->type, "Null") != 0) {
@@ -1496,11 +1504,11 @@ yyreduce:
                                                                             }
                                                                             else {(yyval.node) = (yyvsp[-1].node);}
                                                                         }
-#line 1500 "y.tab.c" /* yacc.c:1646  */
+#line 1508 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 6:
-#line 82 "uccompiler.y" /* yacc.c:1646  */
+  case 5:
+#line 77 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                             if(debug) printf("FunctionsAndDeclarations: Declaration\n");
                                                                             if((yyvsp[-1].node)) {
@@ -1513,11 +1521,29 @@ yyreduce:
                                                                             }
                                                                             else {(yyval.node) = (yyvsp[-1].node);}
                                                                         }
-#line 1517 "y.tab.c" /* yacc.c:1646  */
+#line 1525 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 6:
+#line 89 "uccompiler.y" /* yacc.c:1646  */
+    {}
+#line 1531 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 96 "uccompiler.y" /* yacc.c:1646  */
+#line 90 "uccompiler.y" /* yacc.c:1646  */
+    {}
+#line 1537 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 91 "uccompiler.y" /* yacc.c:1646  */
+    {}
+#line 1543 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 94 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                 if(debug) printf("Function Definition: Typespec FunctionDeclarator FunctionBody\n");
                                                                 struct node* tmp = (yyvsp[-1].node);
@@ -1526,30 +1552,30 @@ yyreduce:
                                                                 //printNode($1); printNode($1->next); printNode($1->next->next); printNode($1->next->next->next); 
                                                                 (yyval.node) = appendNode(createNode("FuncDefinition"), (yyvsp[-2].node));
                                                              }
-#line 1530 "y.tab.c" /* yacc.c:1646  */
+#line 1556 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 8:
-#line 106 "uccompiler.y" /* yacc.c:1646  */
+  case 10:
+#line 104 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             if(debug) printf("FunctionBody: {DeclarationsAndStatements}\n");
                                                             (yyval.node) = appendNode(createNode("FuncBody"), (yyvsp[-1].node));
                                                             //printNode($$);
                                                         }
-#line 1540 "y.tab.c" /* yacc.c:1646  */
+#line 1566 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 9:
-#line 111 "uccompiler.y" /* yacc.c:1646  */
+  case 11:
+#line 109 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             if(debug) printf("FunctionBody: {}\n");
                                                             //printNode($$);
                                                         }
-#line 1549 "y.tab.c" /* yacc.c:1646  */
+#line 1575 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 10:
-#line 117 "uccompiler.y" /* yacc.c:1646  */
+  case 12:
+#line 115 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                         if(debug) printf("DeclarationsAndStatements: Statements\n");
                                                                         if((yyvsp[-1].node)) {
@@ -1563,11 +1589,11 @@ yyreduce:
                                                                         else if((yyvsp[0].node)) {(yyval.node) = (yyvsp[0].node);}
                                                                         else {(yyval.node) = NULL;}
                                                                     }
-#line 1567 "y.tab.c" /* yacc.c:1646  */
+#line 1593 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 11:
-#line 130 "uccompiler.y" /* yacc.c:1646  */
+  case 13:
+#line 128 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                         if(debug) printf("DeclarationsAndStatements: Declaration\n");
                                                                         if((yyvsp[-1].node)) {
@@ -1581,34 +1607,34 @@ yyreduce:
                                                                         else if((yyvsp[0].node)) {(yyval.node) = (yyvsp[0].node);}
                                                                         else {(yyval.node) = NULL;}
                                                                     }
-#line 1585 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 12:
-#line 143 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[0].node);}
-#line 1591 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 13:
-#line 144 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[0].node);}
-#line 1597 "y.tab.c" /* yacc.c:1646  */
+#line 1611 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 147 "uccompiler.y" /* yacc.c:1646  */
+#line 141 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[0].node);}
+#line 1617 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 142 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[0].node);}
+#line 1623 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 16:
+#line 145 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             if(debug) printf("FunctionDeclaration: Typespec Function Declarator SEMI\n");
                                                             (yyvsp[-2].node)->next = (yyvsp[-1].node);
                                                             (yyval.node) = appendNode(createNode("FuncDeclaration"), (yyvsp[-2].node));
                                                             //printNode($$);
                                                        }
-#line 1608 "y.tab.c" /* yacc.c:1646  */
+#line 1634 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 15:
-#line 155 "uccompiler.y" /* yacc.c:1646  */
+  case 17:
+#line 153 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("FunctionDeclarator: ID (ParameterList)\n");
                                                     struct node* paramlist = createNode("ParamList");
@@ -1616,51 +1642,51 @@ yyreduce:
                                                     (yyvsp[-3].node)->next = paramlist;
                                                     (yyval.node) = (yyvsp[-3].node);
                                                 }
-#line 1620 "y.tab.c" /* yacc.c:1646  */
+#line 1646 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 16:
-#line 164 "uccompiler.y" /* yacc.c:1646  */
+  case 18:
+#line 162 "uccompiler.y" /* yacc.c:1646  */
     {
                                                         if(debug) printf("Parameter List: Parameter Declaration\n");
                                                         (yyval.node) = appendNode(createNode("ParamDeclaration"), (yyvsp[0].node));
                                                       }
-#line 1629 "y.tab.c" /* yacc.c:1646  */
+#line 1655 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 17:
-#line 168 "uccompiler.y" /* yacc.c:1646  */
+  case 19:
+#line 166 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             struct node* tmp = (yyvsp[-2].node);
                                                             while(tmp->next != NULL) tmp = tmp->next;
                                                             tmp->next = appendNode(createNode("ParamDeclaration"), (yyvsp[0].node));
                                                             (yyval.node) = (yyvsp[-2].node);
                                                         }
-#line 1640 "y.tab.c" /* yacc.c:1646  */
+#line 1666 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 18:
-#line 175 "uccompiler.y" /* yacc.c:1646  */
+  case 20:
+#line 173 "uccompiler.y" /* yacc.c:1646  */
     {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ParameterDeclarationAux\n");
                                         (yyval.node) = (yyvsp[0].node);
                                         //printNode($$);
                                     }
-#line 1650 "y.tab.c" /* yacc.c:1646  */
+#line 1676 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 19:
-#line 180 "uccompiler.y" /* yacc.c:1646  */
+  case 21:
+#line 178 "uccompiler.y" /* yacc.c:1646  */
     {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ID ParameterDeclarationAux\n");
                                         (yyvsp[-1].node)->next = (yyvsp[0].node);
                                         (yyval.node) = (yyvsp[-1].node);
                                     }
-#line 1660 "y.tab.c" /* yacc.c:1646  */
+#line 1686 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 20:
-#line 187 "uccompiler.y" /* yacc.c:1646  */
+  case 22:
+#line 185 "uccompiler.y" /* yacc.c:1646  */
     {
                                             if(debug) printf("Declaration: TypeSpec Declarator DeclarationAux SEMI\n");
                                             if((yyvsp[-1].node)) {
@@ -1678,20 +1704,18 @@ yyreduce:
                                                 }
                                             }
                                             (yyval.node) = (yyvsp[-1].node);
-                                            /* printNode($$); printNode($$->children); printNode($$->children->next);
-                                            printNode($$->next->children); printNode($$->next->children->next); */
                                           }
-#line 1685 "y.tab.c" /* yacc.c:1646  */
+#line 1709 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 21:
-#line 207 "uccompiler.y" /* yacc.c:1646  */
+  case 23:
+#line 203 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL;}
-#line 1691 "y.tab.c" /* yacc.c:1646  */
+#line 1715 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 22:
-#line 209 "uccompiler.y" /* yacc.c:1646  */
+  case 24:
+#line 205 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
                                                     //ll de declarators
@@ -1700,18 +1724,15 @@ yyreduce:
                                                         while(tmp->next) tmp = tmp->next;
                                                         if((yyvsp[0].node)) tmp->next = appendNode(createNode("Declaration"), (yyvsp[0].node));
                                                         (yyval.node) = (yyvsp[-2].node);
-                                                        //printNode($$); printNode($$->children);
-                                                        //printNode($$->next); printNode($$->next->children);
                                                     }
                                                     else if((yyvsp[0].node)) {(yyval.node) = (yyvsp[0].node);}
                                                     else {(yyval.node) = NULL;}
-                                                    
                                                 }
-#line 1711 "y.tab.c" /* yacc.c:1646  */
+#line 1732 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 23:
-#line 224 "uccompiler.y" /* yacc.c:1646  */
+  case 25:
+#line 217 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("DeclarationAux: EMPTY\n");
                                                     if((yyvsp[0].node)) {
@@ -1720,23 +1741,23 @@ yyreduce:
                                                     }
                                                     else {(yyval.node) = NULL;}
                                                 }
-#line 1724 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 24:
-#line 234 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[0].node);}
-#line 1730 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 25:
-#line 235 "uccompiler.y" /* yacc.c:1646  */
-    {(yyvsp[-2].node)->next = (yyvsp[0].node); (yyval.node) = (yyvsp[-2].node);}
-#line 1736 "y.tab.c" /* yacc.c:1646  */
+#line 1745 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 238 "uccompiler.y" /* yacc.c:1646  */
+#line 227 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[0].node);}
+#line 1751 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 27:
+#line 228 "uccompiler.y" /* yacc.c:1646  */
+    {(yyvsp[-2].node)->next = (yyvsp[0].node); (yyval.node) = (yyvsp[-2].node);}
+#line 1757 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 28:
+#line 231 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             if(debug) printf("Statement: LBRACE Statement RBRACE \n");
                                                             // criar statlist
@@ -1747,40 +1768,36 @@ yyreduce:
                                                                 (yyval.node) = statlist;
                                                             }
                                                         }
-#line 1751 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 27:
-#line 248 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[-1].node);}
-#line 1757 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 28:
-#line 249 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
-#line 1763 "y.tab.c" /* yacc.c:1646  */
+#line 1772 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 250 "uccompiler.y" /* yacc.c:1646  */
+#line 241 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[-1].node);}
+#line 1778 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 30:
+#line 242 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = NULL;}
+#line 1784 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 31:
+#line 243 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = (yyvsp[-2].node);
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
-                                                            if(!(yyvsp[0].node)) {
-                                                                tmp->next = createNode("Null");
-                                                            }
-                                                            tmp->next = (yyvsp[0].node);
-                                                            (yyvsp[0].node)->next = createNode("Null");
-
+                                                            if((yyvsp[0].node) == NULL) {tmp->next = createNode("Null");}
+                                                            else {tmp->next = (yyvsp[0].node); (yyvsp[0].node)->next = createNode("Null");}
                                                             (yyval.node) = appendNode(if_aux, (yyvsp[-2].node));
                                                         }
-#line 1780 "y.tab.c" /* yacc.c:1646  */
+#line 1797 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 30:
-#line 262 "uccompiler.y" /* yacc.c:1646  */
+  case 32:
+#line 251 "uccompiler.y" /* yacc.c:1646  */
     {   
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = (yyvsp[-4].node);
@@ -1853,11 +1870,11 @@ yyreduce:
                                                             if_aux = appendNode(if_aux, (yyvsp[-4].node));
                                                             (yyval.node) = if_aux;
                                                         }
-#line 1857 "y.tab.c" /* yacc.c:1646  */
+#line 1874 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 31:
-#line 334 "uccompiler.y" /* yacc.c:1646  */
+  case 33:
+#line 323 "uccompiler.y" /* yacc.c:1646  */
     {   
                                                             struct node* while_token = createNode("While");
                                                             struct node* tmp = (yyvsp[-2].node);
@@ -1869,51 +1886,37 @@ yyreduce:
                                                             while_token = appendNode(while_token, (yyvsp[-2].node));
                                                             (yyval.node) = while_token;
 
-
                                                         }
-#line 1875 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 32:
-#line 347 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = appendNode(createNode("Return"), (yyvsp[-1].node));}
-#line 1881 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 33:
-#line 348 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = appendNode(createNode("Return"), createNode("Null"));}
-#line 1887 "y.tab.c" /* yacc.c:1646  */
+#line 1891 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 350 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
-#line 1893 "y.tab.c" /* yacc.c:1646  */
+#line 335 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = appendNode(createNode("Return"), (yyvsp[-1].node));}
+#line 1897 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 351 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
-#line 1899 "y.tab.c" /* yacc.c:1646  */
+#line 336 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = appendNode(createNode("Return"), createNode("Null"));}
+#line 1903 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 353 "uccompiler.y" /* yacc.c:1646  */
-    {
-                                                /*if(!$1) $$ = $2;
-                                                else if($1 && $2) {
-                                                    struct node* tmp = $1;
-                                                    while(tmp->next) tmp = tmp->next;
-                                                    tmp->next = $2;
-                                                    $$ = $1;
-                                                }
-                                                else if($1 && !$2) {
-                                                    $1->next = createNode("Null");
-                                                    $$ = $1;
-                                                }
-                                                else $$ = NULL;*/
+#line 337 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = NULL;}
+#line 1909 "y.tab.c" /* yacc.c:1646  */
+    break;
 
+  case 37:
+#line 338 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = NULL;}
+#line 1915 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 38:
+#line 340 "uccompiler.y" /* yacc.c:1646  */
+    {
                                                 if((yyvsp[-1].node)) {
                                                     if((yyvsp[0].node)) {
                                                         struct node* tmp = (yyvsp[-1].node);
@@ -1930,52 +1933,52 @@ yyreduce:
                                                 else (yyval.node) = (yyvsp[0].node);
 
                                              }
-#line 1934 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 37:
-#line 383 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[0].node);}
-#line 1940 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 38:
-#line 385 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[0].node);}
-#line 1946 "y.tab.c" /* yacc.c:1646  */
+#line 1937 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 386 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
-#line 1952 "y.tab.c" /* yacc.c:1646  */
+#line 357 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[0].node);}
+#line 1943 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 388 "uccompiler.y" /* yacc.c:1646  */
+#line 359 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1958 "y.tab.c" /* yacc.c:1646  */
+#line 1949 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 389 "uccompiler.y" /* yacc.c:1646  */
+#line 360 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = NULL;}
+#line 1955 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 42:
+#line 362 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[0].node);}
+#line 1961 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 43:
+#line 363 "uccompiler.y" /* yacc.c:1646  */
     {
                                                 if(debug) printf("Expr: Expr COMMA Expr\n");
                                                 struct node* aux = createNode("Comma");
                                                 aux = appendNode(aux, (yyvsp[0].node));
                                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                             }
-#line 1969 "y.tab.c" /* yacc.c:1646  */
+#line 1972 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 42:
-#line 396 "uccompiler.y" /* yacc.c:1646  */
+  case 44:
+#line 370 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1975 "y.tab.c" /* yacc.c:1646  */
+#line 1978 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 43:
-#line 397 "uccompiler.y" /* yacc.c:1646  */
+  case 45:
+#line 371 "uccompiler.y" /* yacc.c:1646  */
     {
                                                 if((yyvsp[-2].node)) {
                                                     struct node* tmp = (yyvsp[-2].node);
@@ -1987,11 +1990,11 @@ yyreduce:
                                                 else {(yyval.node) = NULL;}
                                                 
                                             }
-#line 1991 "y.tab.c" /* yacc.c:1646  */
+#line 1994 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 44:
-#line 409 "uccompiler.y" /* yacc.c:1646  */
+  case 46:
+#line 383 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
                                                     struct node* call = createNode("Call");
@@ -2000,23 +2003,23 @@ yyreduce:
                                                     (yyval.node) = call;
                                                     //printNode($$);
                                                 }
-#line 2004 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 45:
-#line 417 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = appendNode(createNode("Call"), (yyvsp[-2].node));}
-#line 2010 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 46:
-#line 418 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
-#line 2016 "y.tab.c" /* yacc.c:1646  */
+#line 2007 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 421 "uccompiler.y" /* yacc.c:1646  */
+#line 391 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = appendNode(createNode("Call"), (yyvsp[-2].node));}
+#line 2013 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 48:
+#line 392 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = NULL;}
+#line 2019 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 49:
+#line 395 "uccompiler.y" /* yacc.c:1646  */
     {
                                     if(debug) printf("Assignment: ID ASSIGN Expr\n");
                                     struct node* store = createNode("Store");
@@ -2024,311 +2027,311 @@ yyreduce:
                                     (yyval.node) = appendNode(store, (yyvsp[-2].node));
                                     //printNode($$); printNode($$->children); printNode($$->children->next);
                                }
-#line 2028 "y.tab.c" /* yacc.c:1646  */
+#line 2031 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 48:
-#line 428 "uccompiler.y" /* yacc.c:1646  */
+  case 50:
+#line 402 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mul");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2039 "y.tab.c" /* yacc.c:1646  */
+#line 2042 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 49:
-#line 434 "uccompiler.y" /* yacc.c:1646  */
+  case 51:
+#line 408 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Div");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2050 "y.tab.c" /* yacc.c:1646  */
+#line 2053 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 50:
-#line 440 "uccompiler.y" /* yacc.c:1646  */
+  case 52:
+#line 414 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Add");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2061 "y.tab.c" /* yacc.c:1646  */
+#line 2064 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 51:
-#line 446 "uccompiler.y" /* yacc.c:1646  */
+  case 53:
+#line 420 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Sub");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2072 "y.tab.c" /* yacc.c:1646  */
+#line 2075 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 52:
-#line 452 "uccompiler.y" /* yacc.c:1646  */
+  case 54:
+#line 426 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mod");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2083 "y.tab.c" /* yacc.c:1646  */
+#line 2086 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 53:
-#line 458 "uccompiler.y" /* yacc.c:1646  */
+  case 55:
+#line 432 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("And");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2094 "y.tab.c" /* yacc.c:1646  */
+#line 2097 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 54:
-#line 464 "uccompiler.y" /* yacc.c:1646  */
+  case 56:
+#line 438 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Or");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2105 "y.tab.c" /* yacc.c:1646  */
+#line 2108 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 55:
-#line 470 "uccompiler.y" /* yacc.c:1646  */
+  case 57:
+#line 444 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr BITWISEAND Expr\n");
                                 struct node* aux = createNode("BitWiseAnd");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2116 "y.tab.c" /* yacc.c:1646  */
+#line 2119 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 56:
-#line 476 "uccompiler.y" /* yacc.c:1646  */
+  case 58:
+#line 450 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr BITWISEOR Expr\n");
                                 struct node* aux = createNode("BitWiseOr");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2127 "y.tab.c" /* yacc.c:1646  */
+#line 2130 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 57:
-#line 482 "uccompiler.y" /* yacc.c:1646  */
+  case 59:
+#line 456 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr BITWISEXOR Expr\n");
                                 struct node* aux = createNode("BitWiseXor");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2138 "y.tab.c" /* yacc.c:1646  */
+#line 2141 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 58:
-#line 488 "uccompiler.y" /* yacc.c:1646  */
+  case 60:
+#line 462 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr EQ Expr\n");
                                 struct node* aux = createNode("Eq");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2149 "y.tab.c" /* yacc.c:1646  */
+#line 2152 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 59:
-#line 494 "uccompiler.y" /* yacc.c:1646  */
+  case 61:
+#line 468 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr NE Expr\n");
                                 struct node* aux = createNode("Ne");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2160 "y.tab.c" /* yacc.c:1646  */
+#line 2163 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 60:
-#line 500 "uccompiler.y" /* yacc.c:1646  */
+  case 62:
+#line 474 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr GE Expr\n");
                                 struct node* aux = createNode("Ge");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2171 "y.tab.c" /* yacc.c:1646  */
+#line 2174 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 61:
-#line 506 "uccompiler.y" /* yacc.c:1646  */
+  case 63:
+#line 480 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr GT Expr\n");
                                 struct node* aux = createNode("Gt");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2182 "y.tab.c" /* yacc.c:1646  */
+#line 2185 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 62:
-#line 512 "uccompiler.y" /* yacc.c:1646  */
+  case 64:
+#line 486 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr LE Expr\n");
                                 struct node* aux = createNode("Le");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2193 "y.tab.c" /* yacc.c:1646  */
+#line 2196 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 63:
-#line 518 "uccompiler.y" /* yacc.c:1646  */
+  case 65:
+#line 492 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr LT Expr\n");
                                 struct node* aux = createNode("Lt");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2204 "y.tab.c" /* yacc.c:1646  */
+#line 2207 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 64:
-#line 524 "uccompiler.y" /* yacc.c:1646  */
+  case 66:
+#line 498 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: NOT Expr\n");
                                 (yyval.node) = appendNode(createNode("Not"), (yyvsp[0].node));
                                }
-#line 2213 "y.tab.c" /* yacc.c:1646  */
+#line 2216 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 65:
-#line 528 "uccompiler.y" /* yacc.c:1646  */
+  case 67:
+#line 502 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: PLUS Expr NOT\n");
                                 (yyval.node) = appendNode(createNode("Plus"), (yyvsp[0].node));
                                }
-#line 2222 "y.tab.c" /* yacc.c:1646  */
+#line 2225 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 66:
-#line 532 "uccompiler.y" /* yacc.c:1646  */
+  case 68:
+#line 506 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: MINUS Expr NOT\n");
                                 (yyval.node) = appendNode(createNode("Minus"), (yyvsp[0].node));
                                }
-#line 2231 "y.tab.c" /* yacc.c:1646  */
+#line 2234 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 67:
-#line 536 "uccompiler.y" /* yacc.c:1646  */
+  case 69:
+#line 510 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 2237 "y.tab.c" /* yacc.c:1646  */
+#line 2240 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 68:
-#line 537 "uccompiler.y" /* yacc.c:1646  */
+  case 70:
+#line 511 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
                                 (yyval.node) = (yyvsp[-1].node);
                                }
-#line 2246 "y.tab.c" /* yacc.c:1646  */
+#line 2249 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 69:
-#line 541 "uccompiler.y" /* yacc.c:1646  */
+  case 71:
+#line 515 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL;}
-#line 2252 "y.tab.c" /* yacc.c:1646  */
+#line 2255 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 70:
-#line 542 "uccompiler.y" /* yacc.c:1646  */
+  case 72:
+#line 516 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: ID\n");
                                 (yyval.node) = (yyvsp[0].node);
                                }
-#line 2261 "y.tab.c" /* yacc.c:1646  */
+#line 2264 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 71:
-#line 546 "uccompiler.y" /* yacc.c:1646  */
+  case 73:
+#line 520 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: INTLIT\n");
                                 strcpy(string, "");
                                 sprintf(string, "IntLit(%s)", yyval.str_value);
                                 (yyval.node) = createNode(strdup(string));
                                }
-#line 2272 "y.tab.c" /* yacc.c:1646  */
+#line 2275 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 72:
-#line 552 "uccompiler.y" /* yacc.c:1646  */
+  case 74:
+#line 526 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: CHRLIT\n");
                                 sprintf(string, "ChrLit(%s)", yyval.str_value);
                                 (yyval.node) = createNode(strdup(string));
                                }
-#line 2282 "y.tab.c" /* yacc.c:1646  */
+#line 2285 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 73:
-#line 557 "uccompiler.y" /* yacc.c:1646  */
+  case 75:
+#line 531 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: REALLIT\n");
                                 sprintf(string, "RealLit(%s)", yyval.str_value);
                                 (yyval.node) = createNode(strdup(string));
                                }
-#line 2292 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 74:
-#line 564 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = createNode("Char");}
-#line 2298 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 75:
-#line 565 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = createNode("Int");}
-#line 2304 "y.tab.c" /* yacc.c:1646  */
+#line 2295 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 566 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = createNode("Short");}
-#line 2310 "y.tab.c" /* yacc.c:1646  */
+#line 538 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = createNode("Char");}
+#line 2301 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 567 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = createNode("Double");}
-#line 2316 "y.tab.c" /* yacc.c:1646  */
+#line 539 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = createNode("Int");}
+#line 2307 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 568 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = createNode("Void");}
-#line 2322 "y.tab.c" /* yacc.c:1646  */
+#line 540 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = createNode("Short");}
+#line 2313 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 570 "uccompiler.y" /* yacc.c:1646  */
+#line 541 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = createNode("Double");}
+#line 2319 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 80:
+#line 542 "uccompiler.y" /* yacc.c:1646  */
+    {(yyval.node) = createNode("Void");}
+#line 2325 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 81:
+#line 544 "uccompiler.y" /* yacc.c:1646  */
     {strcpy(string, ""); sprintf(string, "Id(%s)", yyval.id_value); (yyval.node) = createNode(strdup(string));}
-#line 2328 "y.tab.c" /* yacc.c:1646  */
+#line 2331 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2332 "y.tab.c" /* yacc.c:1646  */
+#line 2335 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2556,4 +2559,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 572 "uccompiler.y" /* yacc.c:1906  */
+#line 546 "uccompiler.y" /* yacc.c:1906  */

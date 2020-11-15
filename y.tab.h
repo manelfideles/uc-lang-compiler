@@ -78,10 +78,11 @@ extern int yydebug;
     LPAR = 288,
     RPAR = 289,
     SEMI = 290,
-    ID = 291,
-    CHRLIT = 292,
-    INTLIT = 293,
-    REALLIT = 294
+    RESERVED = 291,
+    ID = 292,
+    CHRLIT = 293,
+    INTLIT = 294,
+    REALLIT = 295
   };
 #endif
 /* Tokens.  */
@@ -118,10 +119,11 @@ extern int yydebug;
 #define LPAR 288
 #define RPAR 289
 #define SEMI 290
-#define ID 291
-#define CHRLIT 292
-#define INTLIT 293
-#define REALLIT 294
+#define RESERVED 291
+#define ID 292
+#define CHRLIT 293
+#define INTLIT 294
+#define REALLIT 295
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -134,7 +136,7 @@ union YYSTYPE
     char* id_value;
     struct node *node;
 
-#line 138 "y.tab.h" /* yacc.c:1909  */
+#line 140 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

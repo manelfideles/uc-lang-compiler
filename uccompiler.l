@@ -74,7 +74,7 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 <COMMENT_2>\r|\n|(\r\n)     {line++; column = 1; BEGIN 0;}
 
 
-{RESERVED}             {if(!e1) printf("RESERVED(%s)\n", yytext); column += yyleng;}
+{RESERVED}             {if(!e1) printf("RESERVED(%s)\n", yytext); column += yyleng; return RESERVED;}
 {MINUS}                {if(!e1) printf("MINUS\n"); column += yyleng; return MINUS;}
 {PLUS}                 {if(!e1) printf("PLUS\n"); column += yyleng; return PLUS;}
 {MUL}                  {if(!e1) printf("MUL\n"); column += yyleng; return MUL;}
@@ -133,13 +133,34 @@ int yywrap() {
 
 int main(int argc, char *argv[]) {
     if (argc > 1) {
+        // -l flag
         if(strcmp(argv[1], "-l") == 0) {
             e1 = 0;
+            e2 = 0;
+            yylex();
         }
+        // -e1
+        if(strcmp(argv[1], "-e1") == 0) {
+            e1 = 1;
+            e2 = 0;
+            yylex();
+        }
+        // -t
         if(strcmp(argv[1], "-t") == 0) {
             yyparse();
             printTree(program);
         }
+        // -e2
+        if(strcmp(argv[1], "-e2") == 0) {
+            e1 = 1;
+            e2 = 1;
+            yyparse();
+
+        }
+    }
+    else {
+        yylex();
+        yyparse();
     }
     
     return 0;

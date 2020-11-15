@@ -29,9 +29,7 @@
     struct node *node;
 }
 
-%define parse.error verbose
-
-%token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI
+%token<str_value> MINUS PLUS MUL DIV MOD BITWISEAND BITWISEOR BITWISEXOR AND NOT OR EQ NE LE GE LT GT CHAR INT SHORT DOUBLE VOID IF ELSE WHILE RETURN ASSIGN COMMA LBRACE RBRACE LPAR RPAR SEMI RESERVED
 %token<str_value> ID CHRLIT INTLIT REALLIT
 %type<node> Program FunctionsAndDeclarations FunctionDefinition FunctionBody DeclarationsAndStatements FunctionDeclaration FunctionDeclarator ParameterList ParameterDeclaration Declaration DeclarationAux Declarator Statement StatementList FunctionCall ArgList FuncCallArgList Expr Typespec IdToken StatementError
 
@@ -54,16 +52,13 @@
 
 %%
 Program: FunctionsAndDeclarations {
-                                    if(debug) printf("Program\n");
-                                    program = createNode("Program");
-                                    $$ = program = appendNode(program, $1);
+                                    if(strcmp($1->type, "Null") != 0) {
+                                        program = createNode("Program");
+                                        $$ = program = appendNode(program, $1);
+                                    }
                                   }
        ;
-FunctionsAndDeclarations: %empty                                        {
-                                                                            if(debug) printf("FunctionsAndDeclarations: EMPTY\n");
-                                                                            $$ = createNode("Null");
-                                                                        }
-                        | FunctionDefinition FunctionsAndDeclarations   {
+FunctionsAndDeclarations: FunctionDefinition FunctionsAndDeclarations   {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDefinition\n");
                                                                             if(strcmp($2->type, "Null") != 0) {
                                                                                 $1->next = $2;
@@ -91,6 +86,9 @@ FunctionsAndDeclarations: %empty                                        {
                                                                             }
                                                                             else {$$ = $1;}
                                                                         }
+                        | FunctionDefinition                            {}
+                        | FunctionDeclaration                           {}
+                        | Declaration                                   {}                                                
                         ;
 
 FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
@@ -201,8 +199,6 @@ Declaration: Typespec DeclarationAux SEMI {
                                                 }
                                             }
                                             $$ = $2;
-                                            /* printNode($$); printNode($$->children); printNode($$->children->next);
-                                            printNode($$->next->children); printNode($$->next->children->next); */
                                           }
             | error SEMI                  {$$ = NULL;}
            ;
@@ -214,12 +210,9 @@ DeclarationAux: DeclarationAux COMMA Declarator  {
                                                         while(tmp->next) tmp = tmp->next;
                                                         if($3) tmp->next = appendNode(createNode("Declaration"), $3);
                                                         $$ = $1;
-                                                        //printNode($$); printNode($$->children);
-                                                        //printNode($$->next); printNode($$->next->children);
                                                     }
                                                     else if($3) {$$ = $3;}
                                                     else {$$ = NULL;}
-                                                    
                                                 }
               | Declarator                      {
                                                     if(debug) printf("DeclarationAux: EMPTY\n");
@@ -251,12 +244,8 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
-                                                            if(!$5) {
-                                                                tmp->next = createNode("Null");
-                                                            }
-                                                            tmp->next = $5;
-                                                            $5->next = createNode("Null");
-
+                                                            if($5 == NULL) {tmp->next = createNode("Null");}
+                                                            else {tmp->next = $5; $5->next = createNode("Null");}
                                                             $$ = appendNode(if_aux, $3);
                                                         }
          |   IF LPAR ArgList RPAR StatementError ELSE StatementError {   
@@ -342,28 +331,13 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             while_token = appendNode(while_token, $3);
                                                             $$ = while_token;
 
-
                                                         }
          |   RETURN Expr SEMI                           {$$ = appendNode(createNode("Return"), $2);}
          |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
-
          |   LBRACE error RBRACE                        {$$ = NULL;}
          |   LBRACE RBRACE                              {$$ = NULL;}
          ;
 StatementList: StatementError StatementList  {
-                                                /*if(!$1) $$ = $2;
-                                                else if($1 && $2) {
-                                                    struct node* tmp = $1;
-                                                    while(tmp->next) tmp = tmp->next;
-                                                    tmp->next = $2;
-                                                    $$ = $1;
-                                                }
-                                                else if($1 && !$2) {
-                                                    $1->next = createNode("Null");
-                                                    $$ = $1;
-                                                }
-                                                else $$ = NULL;*/
-
                                                 if($1) {
                                                     if($2) {
                                                         struct node* tmp = $1;

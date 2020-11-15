@@ -952,7 +952,7 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 78 "uccompiler.l"
-{if(!e1) printf("RESERVED(%s)\n", yytext); column += yyleng;}
+{if(!e1) printf("RESERVED(%s)\n", yytext); column += yyleng; return RESERVED;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -2190,13 +2190,34 @@ int yywrap() {
 
 int main(int argc, char *argv[]) {
     if (argc > 1) {
+        // -l flag
         if(strcmp(argv[1], "-l") == 0) {
             e1 = 0;
+            e2 = 0;
+            yylex();
         }
+        // -e1
+        if(strcmp(argv[1], "-e1") == 0) {
+            e1 = 1;
+            e2 = 0;
+            yylex();
+        }
+        // -t
         if(strcmp(argv[1], "-t") == 0) {
             yyparse();
             printTree(program);
         }
+        // -e2
+        if(strcmp(argv[1], "-e2") == 0) {
+            e1 = 1;
+            e2 = 1;
+            yyparse();
+
+        }
+    }
+    else {
+        yylex();
+        yyparse();
     }
     
     return 0;
