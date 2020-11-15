@@ -81,8 +81,12 @@ FunctionsAndDeclarations: %empty                                        {
                                                                         }
                         | Declaration FunctionsAndDeclarations          {
                                                                             if(debug) printf("FunctionsAndDeclarations: Declaration\n");
-                                                                            if(strcmp($2->type, "Null") != 0) {
-                                                                                $1->next = $2;
+                                                                            if($1) {
+                                                                                if($2) {
+                                                                                    NodePtr* tmp = $1;
+                                                                                    while(tmp->next) tmp = tmp->next;
+                                                                                    tmp->next = $2;
+                                                                                }
                                                                                 $$ = $1;
                                                                             }
                                                                             else {$$ = $1;}
@@ -110,23 +114,31 @@ FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
                                                         }
             ;
 
-DeclarationsAndStatements: Statement DeclarationsAndStatements   {
+DeclarationsAndStatements: DeclarationsAndStatements Statement      {
                                                                         if(debug) printf("DeclarationsAndStatements: Statements\n");
                                                                         if($1) {
-                                                                            $$ = $1;
-                                                                            if($2 || strcmp($2->type, "Null") != 0) {
+                                                                            if($2) {
                                                                                 struct node* tmp = $1;
                                                                                 while(tmp->next) tmp = tmp->next;
                                                                                 tmp->next = $2;
+                                                                                $$ = $1;
                                                                             }
                                                                         }
                                                                         else if($2) {$$ = $2;}
+                                                                        else {$$ = NULL;}
                                                                     }
-                         | Declaration DeclarationsAndStatements {
+                         | DeclarationsAndStatements Declaration    {
                                                                         if(debug) printf("DeclarationsAndStatements: Declaration\n");
-                                                                        //printNode($1);
-                                                                        $1->next = $2;
-                                                                        $$ = $1;
+                                                                        if($1) {
+                                                                            if($2) {
+                                                                                struct node* tmp = $1;
+                                                                                while(tmp->next) tmp = tmp->next;
+                                                                                tmp->next = $2;
+                                                                                }
+                                                                            $$ = $1;
+                                                                        }
+                                                                        else if($2) {$$ = $2;}
+                                                                        else {$$ = NULL;}
                                                                     }
                          | Declaration                              {$$ = $1;}
                          | Statement                                {$$ = $1;}
@@ -172,39 +184,55 @@ ParameterDeclaration: Typespec      {
                                     }
                     ;
 
-Declaration: Typespec Declarator DeclarationAux SEMI {
-                                                        if(debug) printf("Declaration: TypeSpec Declarator DeclarationAux SEMI\n");
-                                                        if(strcmp($3->type, "Null") != 0) {
-                                                            $1->next = $2;
-                                                            $2->next = $3;
-                                                        } 
-                                                        else {$1->next = $2;}
-                                                        $$ = appendNode(createNode("Declaration"), $1);
-                                                        //printNode($$);
-                                                     }
-            | error SEMI                             {$$ = NULL;}
-           ;
-DeclarationAux: COMMA Declarator DeclarationAux {
-                                                    if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
-                                                    if(strcmp($3->type, "Null") != 0) $$ = $2;
-                                                    else $2->next = $3;
-                                                    //printNode($$);
+Declaration: Typespec DeclarationAux SEMI {
+                                            if(debug) printf("Declaration: TypeSpec Declarator DeclarationAux SEMI\n");
+                                            if($2) {
+                                                struct node* tmp = $2;
+                                                while(tmp) {
+                                                    // criar nó typespec
+                                                    struct node* typespec = createNode($1->type);
+                                                    // bebés = os filhos de tmp
+                                                    struct node* babies = tmp->children;
+                                                    // tmp->children = nó typespec
+                                                    tmp->children = typespec;
+                                                    // nó typespec->next = bebés
+                                                    typespec->next = babies;
+                                                    tmp = tmp->next;
                                                 }
-              | %empty                          {
+                                            }
+                                            $$ = $2;
+                                            /* printNode($$); printNode($$->children); printNode($$->children->next);
+                                            printNode($$->next->children); printNode($$->next->children->next); */
+                                          }
+            | error SEMI                  {$$ = NULL;}
+           ;
+DeclarationAux: DeclarationAux COMMA Declarator  {
+                                                    if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
+                                                    //ll de declarators
+                                                    if($1) {
+                                                        struct node* tmp = $1;
+                                                        while(tmp->next) tmp = tmp->next;
+                                                        if($3) tmp->next = appendNode(createNode("Declaration"), $3);
+                                                        $$ = $1;
+                                                        //printNode($$); printNode($$->children);
+                                                        //printNode($$->next); printNode($$->next->children);
+                                                    }
+                                                    else if($3) {$$ = $3;}
+                                                    else {$$ = NULL;}
+                                                    
+                                                }
+              | Declarator                      {
                                                     if(debug) printf("DeclarationAux: EMPTY\n");
-                                                    $$ = createNode("Null");
+                                                    if($1) {
+                                                        struct node* dec = createNode("Declaration");
+                                                        $$ = appendNode(dec, $1);
+                                                    }
+                                                    else {$$ = NULL;}
                                                 }
               ;
 
-Declarator:  IdToken             {
-                                if(debug) printf("Declarator: ID\n");
-                                $$ = $1;
-                            }
-          |  IdToken ASSIGN Expr {
-                                if(debug) printf("Declarator: ID ASSIGN Expr\n");
-                                $1->next = $3;
-                                $$ = $1;
-                            }
+Declarator:  IdToken             {$$ = $1;}
+          |  IdToken ASSIGN Expr {$1->next = $3; $$ = $1;}
           ;
 
 Statement:   LBRACE StatementList RBRACE                {
@@ -217,9 +245,9 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                 $$ = statlist;
                                                             }
                                                         }
-         |   Expr SEMI                                  {$$ = $1;}
+         |   ArgList SEMI                               {$$ = $1;}
          |   SEMI                                       {$$ = NULL;}
-         |   IF LPAR Expr RPAR StatementError %prec ELSE     {
+         |   IF LPAR ArgList RPAR StatementError %prec ELSE     {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
@@ -227,11 +255,11 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                 tmp->next = createNode("Null");
                                                             }
                                                             tmp->next = $5;
-                                                            tmp->next->next = createNode("Null");
+                                                            $5->next = createNode("Null");
 
                                                             $$ = appendNode(if_aux, $3);
                                                         }
-         |   IF LPAR Expr RPAR StatementError ELSE StatementError {   
+         |   IF LPAR ArgList RPAR StatementError ELSE StatementError {   
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
@@ -367,7 +395,15 @@ ArgList: Expr                               {$$ = $1;}
 
 FuncCallArgList: Expr                       {$$ = $1;}
                | FuncCallArgList COMMA Expr {
-                                                // COMO FAZER ?
+                                                if($1) {
+                                                    struct node* tmp = $1;
+                                                    while(tmp->next) tmp = tmp->next;
+                                                    if($2) tmp->next = $3;
+                                                    $$ = $1;
+                                                }
+                                                else if ($2) {$$ = $3;}
+                                                else {$$ = NULL;}
+                                                
                                             }
 
 FunctionCall: IdToken LPAR FuncCallArgList RPAR {
@@ -378,8 +414,8 @@ FunctionCall: IdToken LPAR FuncCallArgList RPAR {
                                                     $$ = call;
                                                     //printNode($$);
                                                 }
-            | IdToken LPAR RPAR                 {}
-            | IdToken LPAR error RPAR           {}
+            | IdToken LPAR RPAR                 {$$ = appendNode(createNode("Call"), $1);}
+            | IdToken LPAR error RPAR           {$$ = NULL;}
 
 
 Expr:  Expr ASSIGN Expr        {
@@ -502,7 +538,7 @@ Expr:  Expr ASSIGN Expr        {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
                                 $$ = $2;
                                }
-    |  LPAR error RPAR         {;}
+    |  LPAR error RPAR         {$$ = NULL;}
     |  IdToken                 {
                                 if(debug) printf("Expr: ID\n");
                                 $$ = $1;
