@@ -345,7 +345,7 @@ Statement:   LBRACE StatementList RBRACE                {
 
                                                         }
          |   RETURN Expr SEMI                           {$$ = appendNode(createNode("Return"), $2);}
-         |   RETURN SEMI                                {$$ = createNode("Return");}
+         |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
 
          |   LBRACE error RBRACE                        {$$ = NULL;}
          |   LBRACE RBRACE                              {$$ = NULL;}

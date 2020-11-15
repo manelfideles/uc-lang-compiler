@@ -1882,7 +1882,7 @@ yyreduce:
 
   case 33:
 #line 348 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = createNode("Return");}
+    {(yyval.node) = appendNode(createNode("Return"), createNode("Null"));}
 #line 1887 "y.tab.c" /* yacc.c:1646  */
     break;
 
