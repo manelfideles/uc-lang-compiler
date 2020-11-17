@@ -133,34 +133,34 @@ int yywrap() {
 
 int main(int argc, char *argv[]) {
     if (argc > 1) {
-        // -l flag
+        // -l
         if(strcmp(argv[1], "-l") == 0) {
             e1 = 0;
             e2 = 0;
-            yylex();
+            while(yylex());
         }
         // -e1
         if(strcmp(argv[1], "-e1") == 0) {
             e1 = 1;
             e2 = 0;
-            yylex();
+            while(yylex());
         }
         // -t
         if(strcmp(argv[1], "-t") == 0) {
+            t = 0;
             yyparse();
-            printTree(program);
+            if(!t) {printTree(program); /*free tree*/}
         }
         // -e2
         if(strcmp(argv[1], "-e2") == 0) {
             e1 = 1;
             e2 = 1;
             yyparse();
-
         }
     }
     else {
         yylex();
-        yyparse();
+        while(yylex());
     }
     
     return 0;

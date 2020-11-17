@@ -84,11 +84,11 @@ FunctionsAndDeclarations: FunctionDefinition FunctionsAndDeclarations   {
                                                                                 }
                                                                                 $$ = $1;
                                                                             }
-                                                                            else {$$ = $1;}
+                                                                            else {$$ = $2;}
                                                                         }
-                        | FunctionDefinition                            {}
-                        | FunctionDeclaration                           {}
-                        | Declaration                                   {}                                                
+                        | FunctionDefinition                            {$$ = $1;}
+                        | FunctionDeclaration                           {$$ = $1;}
+                        | Declaration                                   {$$ = $1;}                                                
                         ;
 
 FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
@@ -200,7 +200,7 @@ Declaration: Typespec DeclarationAux SEMI {
                                             }
                                             $$ = $2;
                                           }
-            | error SEMI                  {$$ = NULL;}
+            | error SEMI                  {$$ = NULL; t = 1;}
            ;
 DeclarationAux: DeclarationAux COMMA Declarator  {
                                                     if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
@@ -334,7 +334,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                         }
          |   RETURN Expr SEMI                           {$$ = appendNode(createNode("Return"), $2);}
          |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
-         |   LBRACE error RBRACE                        {$$ = NULL;}
+         |   LBRACE error RBRACE                        {$$ = NULL; t = 1;}
          |   LBRACE RBRACE                              {$$ = NULL;}
          ;
 StatementList: StatementError StatementList  {
@@ -357,7 +357,7 @@ StatementList: StatementError StatementList  {
              | StatementError                {$$ = $1;}
             ;
 StatementError: Statement   {$$ = $1;}
-              | error SEMI  {$$ = NULL;}
+              | error SEMI  {$$ = NULL; t = 1;}
 
 ArgList: Expr                               {$$ = $1;}
        | ArgList COMMA Expr                 {
@@ -389,7 +389,7 @@ FunctionCall: IdToken LPAR FuncCallArgList RPAR {
                                                     //printNode($$);
                                                 }
             | IdToken LPAR RPAR                 {$$ = appendNode(createNode("Call"), $1);}
-            | IdToken LPAR error RPAR           {$$ = NULL;}
+            | IdToken LPAR error RPAR           {$$ = NULL; t = 1;}
 
 
 Expr:  Expr ASSIGN Expr        {
@@ -512,7 +512,7 @@ Expr:  Expr ASSIGN Expr        {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
                                 $$ = $2;
                                }
-    |  LPAR error RPAR         {$$ = NULL;}
+    |  LPAR error RPAR         {$$ = NULL; t = 1;}
     |  IdToken                 {
                                 if(debug) printf("Expr: ID\n");
                                 $$ = $1;

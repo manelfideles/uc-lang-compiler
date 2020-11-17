@@ -1519,26 +1519,26 @@ yyreduce:
                                                                                 }
                                                                                 (yyval.node) = (yyvsp[-1].node);
                                                                             }
-                                                                            else {(yyval.node) = (yyvsp[-1].node);}
+                                                                            else {(yyval.node) = (yyvsp[0].node);}
                                                                         }
 #line 1525 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
 #line 89 "uccompiler.y" /* yacc.c:1646  */
-    {}
+    {(yyval.node) = (yyvsp[0].node);}
 #line 1531 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
 #line 90 "uccompiler.y" /* yacc.c:1646  */
-    {}
+    {(yyval.node) = (yyvsp[0].node);}
 #line 1537 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
 #line 91 "uccompiler.y" /* yacc.c:1646  */
-    {}
+    {(yyval.node) = (yyvsp[0].node);}
 #line 1543 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1710,7 +1710,7 @@ yyreduce:
 
   case 23:
 #line 203 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
+    {(yyval.node) = NULL; t = 1;}
 #line 1715 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1904,7 +1904,7 @@ yyreduce:
 
   case 36:
 #line 337 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
+    {(yyval.node) = NULL; t = 1;}
 #line 1909 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1950,7 +1950,7 @@ yyreduce:
 
   case 41:
 #line 360 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
+    {(yyval.node) = NULL; t = 1;}
 #line 1955 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -2014,7 +2014,7 @@ yyreduce:
 
   case 48:
 #line 392 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
+    {(yyval.node) = NULL; t = 1;}
 #line 2019 "y.tab.c" /* yacc.c:1646  */
     break;
 
@@ -2250,7 +2250,7 @@ yyreduce:
 
   case 71:
 #line 515 "uccompiler.y" /* yacc.c:1646  */
-    {(yyval.node) = NULL;}
+    {(yyval.node) = NULL; t = 1;}
 #line 2255 "y.tab.c" /* yacc.c:1646  */
     break;
 
