@@ -156,10 +156,14 @@ int main(int argc, char *argv[]) {
             e1 = 1;
             e2 = 1;
             yyparse();
+            while(yylex());
         }
+        else {yyparse();}
     }
     else {
-        yylex();
+        e1 = 1;
+        e2 = 1;
+        yyparse();
         while(yylex());
     }
     
