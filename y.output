@@ -51,7 +51,7 @@ Grammar
    30          | IF LPAR ArgList RPAR StatementError
    31          | IF LPAR ArgList RPAR StatementError ELSE StatementError
    32          | WHILE LPAR Expr RPAR StatementError
-   33          | RETURN Expr SEMI
+   33          | RETURN ArgList SEMI
    34          | RETURN SEMI
    35          | LBRACE error RBRACE
    36          | LBRACE RBRACE
@@ -188,15 +188,15 @@ StatementList (55)
 StatementError (56)
     on left: 39 40, on right: 30 31 32 37 38
 ArgList (57)
-    on left: 41 42, on right: 28 30 31 42 69
+    on left: 41 42, on right: 28 30 31 33 42 69
 FuncCallArgList (58)
     on left: 43 44, on right: 44 45
 FunctionCall (59)
     on left: 45 46 47, on right: 68
 Expr (60)
     on left: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65
-    66 67 68 69 70 71 72 73 74, on right: 26 32 33 41 42 43 44 48 49
-    50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67
+    66 67 68 69 70 71 72 73 74, on right: 26 32 41 42 43 44 48 49 50
+    51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67
 Typespec (61)
     on left: 75 76 77 78 79, on right: 8 15 19 20 21
 IdToken (62)
@@ -607,7 +607,7 @@ State 34
 
 State 35
 
-   33 Statement: RETURN . Expr SEMI
+   33 Statement: RETURN . ArgList SEMI
    34          | RETURN . SEMI
 
     MINUS    shift, and go to state 30
@@ -620,8 +620,9 @@ State 35
     INTLIT   shift, and go to state 41
     REALLIT  shift, and go to state 42
 
+    ArgList       go to state 63
     FunctionCall  go to state 47
-    Expr          go to state 63
+    Expr          go to state 48
     IdToken       go to state 50
 
 
@@ -1049,43 +1050,11 @@ State 62
 
 State 63
 
-   33 Statement: RETURN Expr . SEMI
-   48 Expr: Expr . ASSIGN Expr
-   49     | Expr . MUL Expr
-   50     | Expr . DIV Expr
-   51     | Expr . PLUS Expr
-   52     | Expr . MINUS Expr
-   53     | Expr . MOD Expr
-   54     | Expr . AND Expr
-   55     | Expr . OR Expr
-   56     | Expr . BITWISEAND Expr
-   57     | Expr . BITWISEOR Expr
-   58     | Expr . BITWISEXOR Expr
-   59     | Expr . EQ Expr
-   60     | Expr . NE Expr
-   61     | Expr . GE Expr
-   62     | Expr . GT Expr
-   63     | Expr . LE Expr
-   64     | Expr . LT Expr
+   33 Statement: RETURN ArgList . SEMI
+   42 ArgList: ArgList . COMMA Expr
 
-    MINUS       shift, and go to state 76
-    PLUS        shift, and go to state 77
-    MUL         shift, and go to state 78
-    DIV         shift, and go to state 79
-    MOD         shift, and go to state 80
-    BITWISEAND  shift, and go to state 81
-    BITWISEOR   shift, and go to state 82
-    BITWISEXOR  shift, and go to state 83
-    AND         shift, and go to state 84
-    OR          shift, and go to state 85
-    EQ          shift, and go to state 86
-    NE          shift, and go to state 87
-    LE          shift, and go to state 88
-    GE          shift, and go to state 89
-    LT          shift, and go to state 90
-    GT          shift, and go to state 91
-    ASSIGN      shift, and go to state 92
-    SEMI        shift, and go to state 99
+    COMMA  shift, and go to state 74
+    SEMI   shift, and go to state 99
 
 
 State 64
@@ -1621,7 +1590,7 @@ State 98
 
 State 99
 
-   33 Statement: RETURN Expr SEMI .
+   33 Statement: RETURN ArgList SEMI .
 
     $default  reduce using rule 33 (Statement)
 

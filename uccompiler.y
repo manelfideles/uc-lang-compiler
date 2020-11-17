@@ -332,7 +332,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             $$ = while_token;
 
                                                         }
-         |   RETURN Expr SEMI                           {$$ = appendNode(createNode("Return"), $2);}
+         |   RETURN ArgList SEMI                           {$$ = appendNode(createNode("Return"), $2);}
          |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
          |   LBRACE error RBRACE                        {$$ = NULL; t = 1;}
          |   LBRACE RBRACE                              {$$ = NULL;}

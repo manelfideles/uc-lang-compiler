@@ -2197,22 +2197,23 @@ int main(int argc, char *argv[]) {
             while(yylex());
         }
         // -e1
-        if(strcmp(argv[1], "-e1") == 0) {
+        else if(strcmp(argv[1], "-e1") == 0) {
             e1 = 1;
             e2 = 0;
             while(yylex());
         }
         // -t
-        if(strcmp(argv[1], "-t") == 0) {
+        else if(strcmp(argv[1], "-t") == 0) {
             t = 0;
             yyparse();
             if(!t) {printTree(program); /*free tree*/}
         }
         // -e2
-        if(strcmp(argv[1], "-e2") == 0) {
+        else if(strcmp(argv[1], "-e2") == 0) {
             e1 = 1;
             e2 = 1;
             yyparse();
+            while(yylex());
         }
         else {yyparse();}
     }
