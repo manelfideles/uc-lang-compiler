@@ -56,6 +56,7 @@ Program: FunctionsAndDeclarations {
                                         program = createNode("Program");
                                         $$ = program = appendNode(program, $1);
                                     }
+                                    else {$$ = NULL; t = 1;}
                                   }
        ;
 FunctionsAndDeclarations: FunctionDefinition FunctionsAndDeclarations   {
@@ -88,7 +89,7 @@ FunctionsAndDeclarations: FunctionDefinition FunctionsAndDeclarations   {
                                                                         }
                         | FunctionDefinition                            {$$ = $1;}
                         | FunctionDeclaration                           {$$ = $1;}
-                        | Declaration                                   {$$ = $1;}                                                
+                        | Declaration                                   {$$ = $1;}
                         ;
 
 FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
@@ -96,7 +97,6 @@ FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
                                                                 struct node* tmp = $2;
                                                                 while(tmp->next) tmp = tmp->next;
                                                                 $1->next = $2; tmp->next = $3;
-                                                                //printNode($1); printNode($1->next); printNode($1->next->next); printNode($1->next->next->next); 
                                                                 $$ = appendNode(createNode("FuncDefinition"), $1);
                                                              }
                   ;
@@ -106,10 +106,7 @@ FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
                                                             $$ = appendNode(createNode("FuncBody"), $2);
                                                             //printNode($$);
                                                         }
-            |   LBRACE RBRACE                           {
-                                                            if(debug) printf("FunctionBody: {}\n");
-                                                            //printNode($$);
-                                                        }
+            |   LBRACE RBRACE                           {$$ = appendNode(createNode("FuncBody"), NULL);}
             ;
 
 DeclarationsAndStatements: DeclarationsAndStatements Statement      {
@@ -332,7 +329,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             $$ = while_token;
 
                                                         }
-         |   RETURN ArgList SEMI                           {$$ = appendNode(createNode("Return"), $2);}
+         |   RETURN ArgList SEMI                        {$$ = appendNode(createNode("Return"), $2);}
          |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
          |   LBRACE error RBRACE                        {$$ = NULL; t = 1;}
          |   LBRACE RBRACE                              {$$ = NULL;}
@@ -344,21 +341,14 @@ StatementList: StatementError StatementList  {
                                                         while(tmp->next) tmp = tmp->next;
                                                         tmp->next = $2;
                                                     }
-                                                    else {
-                                                        struct node* tmp = $1;
-                                                        while(tmp->next) tmp = tmp->next;
-                                                        tmp->next = NULL;
-                                                    }
                                                     $$ = $1;
                                                 }
                                                 else $$ = $2;
-
                                              }
              | StatementError                {$$ = $1;}
             ;
 StatementError: Statement   {$$ = $1;}
               | error SEMI  {$$ = NULL; t = 1;}
-
 ArgList: Expr                               {$$ = $1;}
        | ArgList COMMA Expr                 {
                                                 if(debug) printf("Expr: Expr COMMA Expr\n");
