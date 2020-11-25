@@ -532,14 +532,14 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    54,    54,    62,    70,    78,    90,    91,    92,    95,
-     104,   109,   112,   125,   138,   139,   142,   150,   159,   163,
-     170,   175,   182,   200,   202,   214,   224,   225,   228,   238,
-     239,   240,   248,   320,   332,   333,   334,   335,   337,   348,
-     350,   351,   352,   353,   360,   361,   373,   381,   382,   385,
-     392,   398,   404,   410,   416,   422,   428,   434,   440,   446,
-     452,   458,   464,   470,   476,   482,   488,   492,   496,   500,
-     501,   505,   506,   510,   516,   521,   528,   529,   530,   531,
-     532,   534
+     104,   108,   111,   124,   137,   138,   141,   149,   158,   162,
+     169,   174,   181,   199,   201,   213,   223,   224,   227,   237,
+     238,   239,   247,   319,   331,   332,   333,   334,   336,   347,
+     349,   350,   351,   352,   359,   360,   372,   380,   381,   384,
+     391,   397,   403,   409,   415,   421,   427,   433,   439,   445,
+     451,   457,   463,   469,   475,   481,   487,   491,   495,   499,
+     500,   504,   505,   509,   515,   520,   527,   528,   529,   530,
+     531,   533
 };
 #endif
 
@@ -1467,7 +1467,7 @@ yyreduce:
         case 2:
 #line 54 "uccompiler.y" /* yacc.c:1646  */
     {
-                                    if(strcmp((yyvsp[0].node)->type, "Null") != 0) {
+                                    if((yyvsp[0].node)) {
                                         program = createNode("Program");
                                         (yyval.node) = program = appendNode(program, (yyvsp[0].node));
                                     }
@@ -1480,7 +1480,7 @@ yyreduce:
 #line 62 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDefinition\n");
-                                                                            if(strcmp((yyvsp[0].node)->type, "Null") != 0) {
+                                                                            if((yyvsp[0].node)) {
                                                                                 (yyvsp[-1].node)->next = (yyvsp[0].node);
                                                                                 (yyval.node) = (yyvsp[-1].node);
                                                                             }
@@ -1493,7 +1493,7 @@ yyreduce:
 #line 70 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDeclaration\n");
-                                                                            if(strcmp((yyvsp[0].node)->type, "Null") != 0) {
+                                                                            if((yyvsp[0].node)) {
                                                                                 (yyvsp[-1].node)->next = (yyvsp[0].node);
                                                                                 (yyval.node) = (yyvsp[-1].node);
                                                                             }
@@ -1554,19 +1554,18 @@ yyreduce:
     {
                                                             if(debug) printf("FunctionBody: {DeclarationsAndStatements}\n");
                                                             (yyval.node) = appendNode(createNode("FuncBody"), (yyvsp[-1].node));
-                                                            //printNode($$);
                                                         }
-#line 1560 "y.tab.c" /* yacc.c:1646  */
+#line 1559 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 109 "uccompiler.y" /* yacc.c:1646  */
+#line 108 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = appendNode(createNode("FuncBody"), NULL);}
-#line 1566 "y.tab.c" /* yacc.c:1646  */
+#line 1565 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 112 "uccompiler.y" /* yacc.c:1646  */
+#line 111 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                         if(debug) printf("DeclarationsAndStatements: Statements\n");
                                                                         if((yyvsp[-1].node)) {
@@ -1580,11 +1579,11 @@ yyreduce:
                                                                         else if((yyvsp[0].node)) {(yyval.node) = (yyvsp[0].node);}
                                                                         else {(yyval.node) = NULL;}
                                                                     }
-#line 1584 "y.tab.c" /* yacc.c:1646  */
+#line 1583 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 125 "uccompiler.y" /* yacc.c:1646  */
+#line 124 "uccompiler.y" /* yacc.c:1646  */
     {
                                                                         if(debug) printf("DeclarationsAndStatements: Declaration\n");
                                                                         if((yyvsp[-1].node)) {
@@ -1598,34 +1597,34 @@ yyreduce:
                                                                         else if((yyvsp[0].node)) {(yyval.node) = (yyvsp[0].node);}
                                                                         else {(yyval.node) = NULL;}
                                                                     }
-#line 1602 "y.tab.c" /* yacc.c:1646  */
+#line 1601 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 138 "uccompiler.y" /* yacc.c:1646  */
+#line 137 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1608 "y.tab.c" /* yacc.c:1646  */
+#line 1607 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 139 "uccompiler.y" /* yacc.c:1646  */
+#line 138 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1614 "y.tab.c" /* yacc.c:1646  */
+#line 1613 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 142 "uccompiler.y" /* yacc.c:1646  */
+#line 141 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             if(debug) printf("FunctionDeclaration: Typespec Function Declarator SEMI\n");
                                                             (yyvsp[-2].node)->next = (yyvsp[-1].node);
                                                             (yyval.node) = appendNode(createNode("FuncDeclaration"), (yyvsp[-2].node));
                                                             //printNode($$);
                                                        }
-#line 1625 "y.tab.c" /* yacc.c:1646  */
+#line 1624 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 150 "uccompiler.y" /* yacc.c:1646  */
+#line 149 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("FunctionDeclarator: ID (ParameterList)\n");
                                                     struct node* paramlist = createNode("ParamList");
@@ -1633,51 +1632,51 @@ yyreduce:
                                                     (yyvsp[-3].node)->next = paramlist;
                                                     (yyval.node) = (yyvsp[-3].node);
                                                 }
-#line 1637 "y.tab.c" /* yacc.c:1646  */
+#line 1636 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 159 "uccompiler.y" /* yacc.c:1646  */
+#line 158 "uccompiler.y" /* yacc.c:1646  */
     {
                                                         if(debug) printf("Parameter List: Parameter Declaration\n");
                                                         (yyval.node) = appendNode(createNode("ParamDeclaration"), (yyvsp[0].node));
                                                       }
-#line 1646 "y.tab.c" /* yacc.c:1646  */
+#line 1645 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 163 "uccompiler.y" /* yacc.c:1646  */
+#line 162 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             struct node* tmp = (yyvsp[-2].node);
                                                             while(tmp->next != NULL) tmp = tmp->next;
                                                             tmp->next = appendNode(createNode("ParamDeclaration"), (yyvsp[0].node));
                                                             (yyval.node) = (yyvsp[-2].node);
                                                         }
-#line 1657 "y.tab.c" /* yacc.c:1646  */
+#line 1656 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 170 "uccompiler.y" /* yacc.c:1646  */
+#line 169 "uccompiler.y" /* yacc.c:1646  */
     {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ParameterDeclarationAux\n");
                                         (yyval.node) = (yyvsp[0].node);
                                         //printNode($$);
                                     }
-#line 1667 "y.tab.c" /* yacc.c:1646  */
+#line 1666 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 175 "uccompiler.y" /* yacc.c:1646  */
+#line 174 "uccompiler.y" /* yacc.c:1646  */
     {
                                         if(debug) printf("ParameterDeclaration: TypeSpec ID ParameterDeclarationAux\n");
                                         (yyvsp[-1].node)->next = (yyvsp[0].node);
                                         (yyval.node) = (yyvsp[-1].node);
                                     }
-#line 1677 "y.tab.c" /* yacc.c:1646  */
+#line 1676 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 182 "uccompiler.y" /* yacc.c:1646  */
+#line 181 "uccompiler.y" /* yacc.c:1646  */
     {
                                             if(debug) printf("Declaration: TypeSpec Declarator DeclarationAux SEMI\n");
                                             if((yyvsp[-1].node)) {
@@ -1696,17 +1695,17 @@ yyreduce:
                                             }
                                             (yyval.node) = (yyvsp[-1].node);
                                           }
-#line 1700 "y.tab.c" /* yacc.c:1646  */
+#line 1699 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 200 "uccompiler.y" /* yacc.c:1646  */
+#line 199 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL; t = 1;}
-#line 1706 "y.tab.c" /* yacc.c:1646  */
+#line 1705 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 202 "uccompiler.y" /* yacc.c:1646  */
+#line 201 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
                                                     //ll de declarators
@@ -1719,11 +1718,11 @@ yyreduce:
                                                     else if((yyvsp[0].node)) {(yyval.node) = (yyvsp[0].node);}
                                                     else {(yyval.node) = NULL;}
                                                 }
-#line 1723 "y.tab.c" /* yacc.c:1646  */
+#line 1722 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 214 "uccompiler.y" /* yacc.c:1646  */
+#line 213 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("DeclarationAux: EMPTY\n");
                                                     if((yyvsp[0].node)) {
@@ -1732,23 +1731,23 @@ yyreduce:
                                                     }
                                                     else {(yyval.node) = NULL;}
                                                 }
-#line 1736 "y.tab.c" /* yacc.c:1646  */
+#line 1735 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 224 "uccompiler.y" /* yacc.c:1646  */
+#line 223 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1742 "y.tab.c" /* yacc.c:1646  */
+#line 1741 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 225 "uccompiler.y" /* yacc.c:1646  */
+#line 224 "uccompiler.y" /* yacc.c:1646  */
     {(yyvsp[-2].node)->next = (yyvsp[0].node); (yyval.node) = (yyvsp[-2].node);}
-#line 1748 "y.tab.c" /* yacc.c:1646  */
+#line 1747 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 228 "uccompiler.y" /* yacc.c:1646  */
+#line 227 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             if(debug) printf("Statement: LBRACE Statement RBRACE \n");
                                                             // criar statlist
@@ -1759,23 +1758,23 @@ yyreduce:
                                                                 (yyval.node) = statlist;
                                                             }
                                                         }
-#line 1763 "y.tab.c" /* yacc.c:1646  */
+#line 1762 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 238 "uccompiler.y" /* yacc.c:1646  */
+#line 237 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[-1].node);}
-#line 1769 "y.tab.c" /* yacc.c:1646  */
+#line 1768 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 239 "uccompiler.y" /* yacc.c:1646  */
+#line 238 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL;}
-#line 1775 "y.tab.c" /* yacc.c:1646  */
+#line 1774 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 240 "uccompiler.y" /* yacc.c:1646  */
+#line 239 "uccompiler.y" /* yacc.c:1646  */
     {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = (yyvsp[-2].node);
@@ -1784,11 +1783,11 @@ yyreduce:
                                                             else {tmp->next = (yyvsp[0].node); (yyvsp[0].node)->next = createNode("Null");}
                                                             (yyval.node) = appendNode(if_aux, (yyvsp[-2].node));
                                                         }
-#line 1788 "y.tab.c" /* yacc.c:1646  */
+#line 1787 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 248 "uccompiler.y" /* yacc.c:1646  */
+#line 247 "uccompiler.y" /* yacc.c:1646  */
     {   
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = (yyvsp[-4].node);
@@ -1861,11 +1860,11 @@ yyreduce:
                                                             if_aux = appendNode(if_aux, (yyvsp[-4].node));
                                                             (yyval.node) = if_aux;
                                                         }
-#line 1865 "y.tab.c" /* yacc.c:1646  */
+#line 1864 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 320 "uccompiler.y" /* yacc.c:1646  */
+#line 319 "uccompiler.y" /* yacc.c:1646  */
     {   
                                                             struct node* while_token = createNode("While");
                                                             struct node* tmp = (yyvsp[-2].node);
@@ -1878,35 +1877,35 @@ yyreduce:
                                                             (yyval.node) = while_token;
 
                                                         }
-#line 1882 "y.tab.c" /* yacc.c:1646  */
+#line 1881 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 332 "uccompiler.y" /* yacc.c:1646  */
+#line 331 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = appendNode(createNode("Return"), (yyvsp[-1].node));}
-#line 1888 "y.tab.c" /* yacc.c:1646  */
+#line 1887 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 333 "uccompiler.y" /* yacc.c:1646  */
+#line 332 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = appendNode(createNode("Return"), createNode("Null"));}
-#line 1894 "y.tab.c" /* yacc.c:1646  */
+#line 1893 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 334 "uccompiler.y" /* yacc.c:1646  */
+#line 333 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL; t = 1;}
-#line 1900 "y.tab.c" /* yacc.c:1646  */
+#line 1899 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 335 "uccompiler.y" /* yacc.c:1646  */
+#line 334 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL;}
-#line 1906 "y.tab.c" /* yacc.c:1646  */
+#line 1905 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 337 "uccompiler.y" /* yacc.c:1646  */
+#line 336 "uccompiler.y" /* yacc.c:1646  */
     {
                                                 if((yyvsp[-1].node)) {
                                                     if((yyvsp[0].node)) {
@@ -1918,52 +1917,52 @@ yyreduce:
                                                 }
                                                 else (yyval.node) = (yyvsp[0].node);
                                              }
-#line 1922 "y.tab.c" /* yacc.c:1646  */
+#line 1921 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 348 "uccompiler.y" /* yacc.c:1646  */
+#line 347 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1928 "y.tab.c" /* yacc.c:1646  */
+#line 1927 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 350 "uccompiler.y" /* yacc.c:1646  */
+#line 349 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1934 "y.tab.c" /* yacc.c:1646  */
+#line 1933 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 351 "uccompiler.y" /* yacc.c:1646  */
+#line 350 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL; t = 1;}
-#line 1940 "y.tab.c" /* yacc.c:1646  */
+#line 1939 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 352 "uccompiler.y" /* yacc.c:1646  */
+#line 351 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1946 "y.tab.c" /* yacc.c:1646  */
+#line 1945 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 353 "uccompiler.y" /* yacc.c:1646  */
+#line 352 "uccompiler.y" /* yacc.c:1646  */
     {
                                                 if(debug) printf("Expr: Expr COMMA Expr\n");
                                                 struct node* aux = createNode("Comma");
                                                 aux = appendNode(aux, (yyvsp[0].node));
                                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                             }
-#line 1957 "y.tab.c" /* yacc.c:1646  */
+#line 1956 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 360 "uccompiler.y" /* yacc.c:1646  */
+#line 359 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1963 "y.tab.c" /* yacc.c:1646  */
+#line 1962 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 361 "uccompiler.y" /* yacc.c:1646  */
+#line 360 "uccompiler.y" /* yacc.c:1646  */
     {
                                                 if((yyvsp[-2].node)) {
                                                     struct node* tmp = (yyvsp[-2].node);
@@ -1975,11 +1974,11 @@ yyreduce:
                                                 else {(yyval.node) = NULL;}
                                                 
                                             }
-#line 1979 "y.tab.c" /* yacc.c:1646  */
+#line 1978 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 373 "uccompiler.y" /* yacc.c:1646  */
+#line 372 "uccompiler.y" /* yacc.c:1646  */
     {
                                                     if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
                                                     struct node* call = createNode("Call");
@@ -1988,23 +1987,23 @@ yyreduce:
                                                     (yyval.node) = call;
                                                     //printNode($$);
                                                 }
-#line 1992 "y.tab.c" /* yacc.c:1646  */
+#line 1991 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 381 "uccompiler.y" /* yacc.c:1646  */
+#line 380 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = appendNode(createNode("Call"), (yyvsp[-2].node));}
-#line 1998 "y.tab.c" /* yacc.c:1646  */
+#line 1997 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 382 "uccompiler.y" /* yacc.c:1646  */
+#line 381 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL; t = 1;}
-#line 2004 "y.tab.c" /* yacc.c:1646  */
+#line 2003 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 385 "uccompiler.y" /* yacc.c:1646  */
+#line 384 "uccompiler.y" /* yacc.c:1646  */
     {
                                     if(debug) printf("Assignment: ID ASSIGN Expr\n");
                                     struct node* store = createNode("Store");
@@ -2012,311 +2011,311 @@ yyreduce:
                                     (yyval.node) = appendNode(store, (yyvsp[-2].node));
                                     //printNode($$); printNode($$->children); printNode($$->children->next);
                                }
-#line 2016 "y.tab.c" /* yacc.c:1646  */
+#line 2015 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 392 "uccompiler.y" /* yacc.c:1646  */
+#line 391 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mul");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2027 "y.tab.c" /* yacc.c:1646  */
+#line 2026 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 398 "uccompiler.y" /* yacc.c:1646  */
+#line 397 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Div");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2038 "y.tab.c" /* yacc.c:1646  */
+#line 2037 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 404 "uccompiler.y" /* yacc.c:1646  */
+#line 403 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Add");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2049 "y.tab.c" /* yacc.c:1646  */
+#line 2048 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 410 "uccompiler.y" /* yacc.c:1646  */
+#line 409 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Sub");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2060 "y.tab.c" /* yacc.c:1646  */
+#line 2059 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 416 "uccompiler.y" /* yacc.c:1646  */
+#line 415 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Mod");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2071 "y.tab.c" /* yacc.c:1646  */
+#line 2070 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 422 "uccompiler.y" /* yacc.c:1646  */
+#line 421 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("And");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2082 "y.tab.c" /* yacc.c:1646  */
+#line 2081 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 428 "uccompiler.y" /* yacc.c:1646  */
+#line 427 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr OR Expr\n");
                                 struct node* aux = createNode("Or");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2093 "y.tab.c" /* yacc.c:1646  */
+#line 2092 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 434 "uccompiler.y" /* yacc.c:1646  */
+#line 433 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr BITWISEAND Expr\n");
                                 struct node* aux = createNode("BitWiseAnd");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2104 "y.tab.c" /* yacc.c:1646  */
+#line 2103 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 440 "uccompiler.y" /* yacc.c:1646  */
+#line 439 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr BITWISEOR Expr\n");
                                 struct node* aux = createNode("BitWiseOr");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2115 "y.tab.c" /* yacc.c:1646  */
+#line 2114 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 446 "uccompiler.y" /* yacc.c:1646  */
+#line 445 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr BITWISEXOR Expr\n");
                                 struct node* aux = createNode("BitWiseXor");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2126 "y.tab.c" /* yacc.c:1646  */
+#line 2125 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 452 "uccompiler.y" /* yacc.c:1646  */
+#line 451 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr EQ Expr\n");
                                 struct node* aux = createNode("Eq");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2137 "y.tab.c" /* yacc.c:1646  */
+#line 2136 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 458 "uccompiler.y" /* yacc.c:1646  */
+#line 457 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr NE Expr\n");
                                 struct node* aux = createNode("Ne");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2148 "y.tab.c" /* yacc.c:1646  */
+#line 2147 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 464 "uccompiler.y" /* yacc.c:1646  */
+#line 463 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr GE Expr\n");
                                 struct node* aux = createNode("Ge");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2159 "y.tab.c" /* yacc.c:1646  */
+#line 2158 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 470 "uccompiler.y" /* yacc.c:1646  */
+#line 469 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr GT Expr\n");
                                 struct node* aux = createNode("Gt");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2170 "y.tab.c" /* yacc.c:1646  */
+#line 2169 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 476 "uccompiler.y" /* yacc.c:1646  */
+#line 475 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr LE Expr\n");
                                 struct node* aux = createNode("Le");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2181 "y.tab.c" /* yacc.c:1646  */
+#line 2180 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 482 "uccompiler.y" /* yacc.c:1646  */
+#line 481 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: Expr LT Expr\n");
                                 struct node* aux = createNode("Lt");
                                 aux = appendNode(aux, (yyvsp[0].node));
                                 (yyval.node) = appendNode(aux, (yyvsp[-2].node));
                                }
-#line 2192 "y.tab.c" /* yacc.c:1646  */
+#line 2191 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 488 "uccompiler.y" /* yacc.c:1646  */
+#line 487 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: NOT Expr\n");
                                 (yyval.node) = appendNode(createNode("Not"), (yyvsp[0].node));
                                }
-#line 2201 "y.tab.c" /* yacc.c:1646  */
+#line 2200 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 492 "uccompiler.y" /* yacc.c:1646  */
+#line 491 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: PLUS Expr NOT\n");
                                 (yyval.node) = appendNode(createNode("Plus"), (yyvsp[0].node));
                                }
-#line 2210 "y.tab.c" /* yacc.c:1646  */
+#line 2209 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 496 "uccompiler.y" /* yacc.c:1646  */
+#line 495 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: MINUS Expr NOT\n");
                                 (yyval.node) = appendNode(createNode("Minus"), (yyvsp[0].node));
                                }
-#line 2219 "y.tab.c" /* yacc.c:1646  */
+#line 2218 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 500 "uccompiler.y" /* yacc.c:1646  */
+#line 499 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 2225 "y.tab.c" /* yacc.c:1646  */
+#line 2224 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 501 "uccompiler.y" /* yacc.c:1646  */
+#line 500 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: LPAR Expr RPAR\n");
                                 (yyval.node) = (yyvsp[-1].node);
                                }
-#line 2234 "y.tab.c" /* yacc.c:1646  */
+#line 2233 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 505 "uccompiler.y" /* yacc.c:1646  */
+#line 504 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = NULL; t = 1;}
-#line 2240 "y.tab.c" /* yacc.c:1646  */
+#line 2239 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 506 "uccompiler.y" /* yacc.c:1646  */
+#line 505 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: ID\n");
                                 (yyval.node) = (yyvsp[0].node);
                                }
-#line 2249 "y.tab.c" /* yacc.c:1646  */
+#line 2248 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 510 "uccompiler.y" /* yacc.c:1646  */
+#line 509 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: INTLIT\n");
                                 strcpy(string, "");
                                 sprintf(string, "IntLit(%s)", yyval.str_value);
                                 (yyval.node) = createNode(strdup(string));
                                }
-#line 2260 "y.tab.c" /* yacc.c:1646  */
+#line 2259 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 516 "uccompiler.y" /* yacc.c:1646  */
+#line 515 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: CHRLIT\n");
                                 sprintf(string, "ChrLit(%s)", yyval.str_value);
                                 (yyval.node) = createNode(strdup(string));
                                }
-#line 2270 "y.tab.c" /* yacc.c:1646  */
+#line 2269 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 521 "uccompiler.y" /* yacc.c:1646  */
+#line 520 "uccompiler.y" /* yacc.c:1646  */
     {
                                 if(debug) printf("Expr: REALLIT\n");
                                 sprintf(string, "RealLit(%s)", yyval.str_value);
                                 (yyval.node) = createNode(strdup(string));
                                }
-#line 2280 "y.tab.c" /* yacc.c:1646  */
+#line 2279 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 528 "uccompiler.y" /* yacc.c:1646  */
+#line 527 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = createNode("Char");}
-#line 2286 "y.tab.c" /* yacc.c:1646  */
+#line 2285 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 529 "uccompiler.y" /* yacc.c:1646  */
+#line 528 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = createNode("Int");}
-#line 2292 "y.tab.c" /* yacc.c:1646  */
+#line 2291 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 530 "uccompiler.y" /* yacc.c:1646  */
+#line 529 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = createNode("Short");}
-#line 2298 "y.tab.c" /* yacc.c:1646  */
+#line 2297 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 531 "uccompiler.y" /* yacc.c:1646  */
+#line 530 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = createNode("Double");}
-#line 2304 "y.tab.c" /* yacc.c:1646  */
+#line 2303 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 532 "uccompiler.y" /* yacc.c:1646  */
+#line 531 "uccompiler.y" /* yacc.c:1646  */
     {(yyval.node) = createNode("Void");}
-#line 2310 "y.tab.c" /* yacc.c:1646  */
+#line 2309 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 534 "uccompiler.y" /* yacc.c:1646  */
+#line 533 "uccompiler.y" /* yacc.c:1646  */
     {strcpy(string, ""); sprintf(string, "Id(%s)", yyval.id_value); (yyval.node) = createNode(strdup(string));}
-#line 2316 "y.tab.c" /* yacc.c:1646  */
+#line 2315 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2320 "y.tab.c" /* yacc.c:1646  */
+#line 2319 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2544,4 +2543,4 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 536 "uccompiler.y" /* yacc.c:1906  */
+#line 535 "uccompiler.y" /* yacc.c:1906  */

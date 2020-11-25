@@ -52,7 +52,7 @@
 
 %%
 Program: FunctionsAndDeclarations {
-                                    if(strcmp($1->type, "Null") != 0) {
+                                    if($1) {
                                         program = createNode("Program");
                                         $$ = program = appendNode(program, $1);
                                     }
@@ -61,7 +61,7 @@ Program: FunctionsAndDeclarations {
        ;
 FunctionsAndDeclarations: FunctionDefinition FunctionsAndDeclarations   {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDefinition\n");
-                                                                            if(strcmp($2->type, "Null") != 0) {
+                                                                            if($2) {
                                                                                 $1->next = $2;
                                                                                 $$ = $1;
                                                                             }
@@ -69,7 +69,7 @@ FunctionsAndDeclarations: FunctionDefinition FunctionsAndDeclarations   {
                                                                         }
                         | FunctionDeclaration FunctionsAndDeclarations  {
                                                                             if(debug) printf("FunctionsAndDeclarations: FunctionDeclaration\n");
-                                                                            if(strcmp($2->type, "Null") != 0) {
+                                                                            if($2) {
                                                                                 $1->next = $2;
                                                                                 $$ = $1;
                                                                             }
@@ -104,7 +104,6 @@ FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
 FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
                                                             if(debug) printf("FunctionBody: {DeclarationsAndStatements}\n");
                                                             $$ = appendNode(createNode("FuncBody"), $2);
-                                                            //printNode($$);
                                                         }
             |   LBRACE RBRACE                           {$$ = appendNode(createNode("FuncBody"), NULL);}
             ;
