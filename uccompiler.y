@@ -316,7 +316,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             if_aux = appendNode(if_aux, $3);
                                                             $$ = if_aux;
                                                         }
-         |   WHILE LPAR Expr RPAR StatementError        {   
+         |   WHILE LPAR ArgList RPAR StatementError        {   
                                                             struct node* while_token = createNode("While");
                                                             struct node* tmp = $3;
 
@@ -348,6 +348,7 @@ StatementList: StatementError StatementList  {
             ;
 StatementError: Statement   {$$ = $1;}
               | error SEMI  {$$ = NULL; t = 1;}
+              ;
 ArgList: Expr                               {$$ = $1;}
        | ArgList COMMA Expr                 {
                                                 if(debug) printf("Expr: Expr COMMA Expr\n");
@@ -355,6 +356,7 @@ ArgList: Expr                               {$$ = $1;}
                                                 aux = appendNode(aux, $3);
                                                 $$ = appendNode(aux, $1);
                                             }
+       ;
 
 FuncCallArgList: Expr                       {$$ = $1;}
                | FuncCallArgList COMMA Expr {
@@ -368,6 +370,7 @@ FuncCallArgList: Expr                       {$$ = $1;}
                                                 else {$$ = NULL;}
                                                 
                                             }
+               ;
 
 FunctionCall: IdToken LPAR FuncCallArgList RPAR {
                                                     if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
@@ -379,8 +382,7 @@ FunctionCall: IdToken LPAR FuncCallArgList RPAR {
                                                 }
             | IdToken LPAR RPAR                 {$$ = appendNode(createNode("Call"), $1);}
             | IdToken LPAR error RPAR           {$$ = NULL; t = 1;}
-
-
+            ;
 Expr:  Expr ASSIGN Expr        {
                                     if(debug) printf("Assignment: ID ASSIGN Expr\n");
                                     struct node* store = createNode("Store");

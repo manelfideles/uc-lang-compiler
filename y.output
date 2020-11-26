@@ -23,8 +23,8 @@ Grammar
 
    11 DeclarationsAndStatements: DeclarationsAndStatements Statement
    12                          | DeclarationsAndStatements Declaration
-   13                          | Declaration
-   14                          | Statement
+   13                          | Statement
+   14                          | Declaration
 
    15 FunctionDeclaration: Typespec FunctionDeclarator SEMI
 
@@ -176,13 +176,13 @@ ParameterList (49)
 ParameterDeclaration (50)
     on left: 19 20, on right: 17 18
 Declaration (51)
-    on left: 21 22, on right: 4 7 12 13
+    on left: 21 22, on right: 4 7 12 14
 DeclarationAux (52)
     on left: 23 24, on right: 21 23
 Declarator (53)
     on left: 25 26, on right: 23 24
 Statement (54)
-    on left: 27 28 29 30 31 32 33 34 35 36, on right: 11 14 39
+    on left: 27 28 29 30 31 32 33 34 35 36, on right: 11 13 39
 StatementList (55)
     on left: 37 38, on right: 27 37
 StatementError (56)
@@ -751,16 +751,16 @@ State 43
 
 State 44
 
-   13 DeclarationsAndStatements: Declaration .
+   14 DeclarationsAndStatements: Declaration .
 
-    $default  reduce using rule 13 (DeclarationsAndStatements)
+    $default  reduce using rule 14 (DeclarationsAndStatements)
 
 
 State 45
 
-   14 DeclarationsAndStatements: Statement .
+   13 DeclarationsAndStatements: Statement .
 
-    $default  reduce using rule 14 (DeclarationsAndStatements)
+    $default  reduce using rule 13 (DeclarationsAndStatements)
 
 
 State 46
