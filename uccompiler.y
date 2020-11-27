@@ -109,26 +109,24 @@ FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
             ;
 
 DeclarationsAndStatements: DeclarationsAndStatements Statement      {
-                                                                        if(debug) printf("DeclarationsAndStatements: Statements\n");
                                                                         if($1) {
                                                                             if($2) {
                                                                                 struct node* tmp = $1;
                                                                                 while(tmp->next) tmp = tmp->next;
                                                                                 tmp->next = $2;
-                                                                                $$ = $1;
                                                                             }
+                                                                            $$ = $1;
                                                                         }
                                                                         else if($2) {$$ = $2;}
                                                                         else {$$ = NULL;}
                                                                     }
                          | DeclarationsAndStatements Declaration    {
-                                                                        if(debug) printf("DeclarationsAndStatements: Declaration\n");
                                                                         if($1) {
                                                                             if($2) {
                                                                                 struct node* tmp = $1;
                                                                                 while(tmp->next) tmp = tmp->next;
                                                                                 tmp->next = $2;
-                                                                                }
+                                                                            }
                                                                             $$ = $1;
                                                                         }
                                                                         else if($2) {$$ = $2;}
@@ -196,7 +194,7 @@ Declaration: Typespec DeclarationAux SEMI {
                                             }
                                             $$ = $2;
                                           }
-            | error SEMI                  {$$ = NULL; t = 1;}
+            | error SEMI                  {$$ = NULL; t = 1; /*printf("Declaration -> error SEMI\n");*/}
            ;
 DeclarationAux: DeclarationAux COMMA Declarator  {
                                                     if(debug) printf("DeclarationAux: COMMA Declarator DeclarationAux\n");
@@ -240,7 +238,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             struct node* if_aux = createNode("If");
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
-                                                            if($5 == NULL) {tmp->next = createNode("Null");}
+                                                            if($5 == NULL) {tmp->next = createNode("Null"); tmp->next->next = createNode("Null");}
                                                             else {tmp->next = $5; $5->next = createNode("Null");}
                                                             $$ = appendNode(if_aux, $3);
                                                         }
@@ -326,7 +324,6 @@ Statement:   LBRACE StatementList RBRACE                {
 
                                                             while_token = appendNode(while_token, $3);
                                                             $$ = while_token;
-
                                                         }
          |   RETURN ArgList SEMI                        {$$ = appendNode(createNode("Return"), $2);}
          |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
@@ -347,7 +344,7 @@ StatementList: StatementError StatementList  {
              | StatementError                {$$ = $1;}
             ;
 StatementError: Statement   {$$ = $1;}
-              | error SEMI  {$$ = NULL; t = 1;}
+              | error SEMI  {$$ = NULL; t = 1; /*printf("Statement -> error SEMI\n");*/}
               ;
 ArgList: Expr                               {$$ = $1;}
        | ArgList COMMA Expr                 {
