@@ -26,6 +26,8 @@
 %union {
     char* str_value;
     char* id_value;
+    int lin;
+    int col;
     struct node *node;
 }
 
@@ -53,7 +55,7 @@
 %%
 Program: FunctionsAndDeclarations {
                                     if($1) {
-                                        program = createNode("Program");
+                                        program = createNode("Program",yyval.lin,yyval.col);
                                         $$ = program = appendNode(program, $1);
                                     }
                                     else {$$ = NULL; t = 1;}
@@ -97,15 +99,15 @@ FunctionDefinition: Typespec FunctionDeclarator FunctionBody {
                                                                 struct node* tmp = $2;
                                                                 while(tmp->next) tmp = tmp->next;
                                                                 $1->next = $2; tmp->next = $3;
-                                                                $$ = appendNode(createNode("FuncDefinition"), $1);
+                                                                $$ = appendNode(createNode("FuncDefinition",yyval.lin,yyval.col), $1);
                                                              }
                   ;
 
 FunctionBody:   LBRACE DeclarationsAndStatements RBRACE {
                                                             if(debug) printf("FunctionBody: {DeclarationsAndStatements}\n");
-                                                            $$ = appendNode(createNode("FuncBody"), $2);
+                                                            $$ = appendNode(createNode("FuncBody",yyval.lin,yyval.col), $2);
                                                         }
-            |   LBRACE RBRACE                           {$$ = appendNode(createNode("FuncBody"), NULL);}
+            |   LBRACE RBRACE                           {$$ = appendNode(createNode("FuncBody",yyval.lin,yyval.col), NULL);}
             ;
 
 DeclarationsAndStatements: DeclarationsAndStatements Statement      {
@@ -139,14 +141,14 @@ DeclarationsAndStatements: DeclarationsAndStatements Statement      {
 FunctionDeclaration:  Typespec FunctionDeclarator SEMI {
                                                             if(debug) printf("FunctionDeclaration: Typespec Function Declarator SEMI\n");
                                                             $1->next = $2;
-                                                            $$ = appendNode(createNode("FuncDeclaration"), $1);
+                                                            $$ = appendNode(createNode("FuncDeclaration",yyval.lin,yyval.col), $1);
                                                             //printNode($$);
                                                        }
                    ;
 
 FunctionDeclarator: IdToken LPAR ParameterList RPAR  {
                                                     if(debug) printf("FunctionDeclarator: ID (ParameterList)\n");
-                                                    struct node* paramlist = createNode("ParamList");
+                                                    struct node* paramlist = createNode("ParamList",yyval.lin,yyval.col);
                                                     paramlist = appendNode(paramlist, $3);
                                                     $1->next = paramlist;
                                                     $$ = $1;
@@ -155,12 +157,12 @@ FunctionDeclarator: IdToken LPAR ParameterList RPAR  {
 
 ParameterList: ParameterDeclaration                   {
                                                         if(debug) printf("Parameter List: Parameter Declaration\n");
-                                                        $$ = appendNode(createNode("ParamDeclaration"), $1);
+                                                        $$ = appendNode(createNode("ParamDeclaration",yyval.lin,yyval.col), $1);
                                                       }
              | ParameterList COMMA ParameterDeclaration {
                                                             struct node* tmp = $1;
                                                             while(tmp->next != NULL) tmp = tmp->next;
-                                                            tmp->next = appendNode(createNode("ParamDeclaration"), $3);
+                                                            tmp->next = appendNode(createNode("ParamDeclaration",yyval.lin,yyval.col), $3);
                                                             $$ = $1;
                                                         }
              ;
@@ -182,7 +184,7 @@ Declaration: Typespec DeclarationAux SEMI {
                                                 struct node* tmp = $2;
                                                 while(tmp) {
                                                     // criar nó typespec
-                                                    struct node* typespec = createNode($1->type);
+                                                    struct node* typespec = createNode($1->type,yyval.lin,yyval.col);
                                                     // bebés = os filhos de tmp
                                                     struct node* babies = tmp->children;
                                                     // tmp->children = nó typespec
@@ -202,7 +204,7 @@ DeclarationAux: DeclarationAux COMMA Declarator  {
                                                     if($1) {
                                                         struct node* tmp = $1;
                                                         while(tmp->next) tmp = tmp->next;
-                                                        if($3) tmp->next = appendNode(createNode("Declaration"), $3);
+                                                        if($3) tmp->next = appendNode(createNode("Declaration",yyval.lin,yyval.col), $3);
                                                         $$ = $1;
                                                     }
                                                     else if($3) {$$ = $3;}
@@ -211,7 +213,7 @@ DeclarationAux: DeclarationAux COMMA Declarator  {
               | Declarator                      {
                                                     if(debug) printf("DeclarationAux: EMPTY\n");
                                                     if($1) {
-                                                        struct node* dec = createNode("Declaration");
+                                                        struct node* dec = createNode("Declaration",yyval.lin,yyval.col);
                                                         $$ = appendNode(dec, $1);
                                                     }
                                                     else {$$ = NULL;}
@@ -227,7 +229,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             // criar statlist
                                                             $$ = $2;
                                                             if($2 && $2->next) {
-                                                                struct node* statlist = createNode("StatList");
+                                                                struct node* statlist = createNode("StatList",yyval.lin,yyval.col);
                                                                 statlist = appendNode(statlist, $2);
                                                                 $$ = statlist;
                                                             }
@@ -235,15 +237,15 @@ Statement:   LBRACE StatementList RBRACE                {
          |   ArgList SEMI                               {$$ = $1;}
          |   SEMI                                       {$$ = NULL;}
          |   IF LPAR ArgList RPAR StatementError %prec ELSE     {
-                                                            struct node* if_aux = createNode("If");
+                                                            struct node* if_aux = createNode("If",yyval.lin,yyval.col);
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
-                                                            if($5 == NULL) {tmp->next = createNode("Null"); tmp->next->next = createNode("Null");}
-                                                            else {tmp->next = $5; $5->next = createNode("Null");}
+                                                            if($5 == NULL) {tmp->next = createNode("Null",yyval.lin,yyval.col); tmp->next->next = createNode("Null",yyval.lin,yyval.col);}
+                                                            else {tmp->next = $5; $5->next = createNode("Null",yyval.lin,yyval.col);}
                                                             $$ = appendNode(if_aux, $3);
                                                         }
          |   IF LPAR ArgList RPAR StatementError ELSE StatementError {   
-                                                            struct node* if_aux = createNode("If");
+                                                            struct node* if_aux = createNode("If",yyval.lin,yyval.col);
                                                             struct node* tmp = $3;
                                                             while(tmp->next != NULL) {tmp = tmp->next;}
 
@@ -252,10 +254,10 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                 struct node* tmp1 = $5;
                                                                 int k = 0;
                                                                 if(tmp1->next) k++;
-                                                                if(k == 0) {tmp->next = $5; $5->next = createNode("Null");}
+                                                                if(k == 0) {tmp->next = $5; $5->next = createNode("Null",yyval.lin,yyval.col);}
                                                                 else {
-                                                                    struct node* statlist = createNode("StatList");
-                                                                    statlist->next = createNode("Null");
+                                                                    struct node* statlist = createNode("StatList",yyval.lin,yyval.col);
+                                                                    statlist->next = createNode("Null",yyval.lin,yyval.col);
                                                                     tmp->next = appendNode(statlist, $5);
                                                                 }
                                                             }
@@ -265,14 +267,14 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                 int i = 0;
                                                                 if(aux->next != NULL) i++;
                                                                 if(i == 0){
-                                                                    struct node* null = createNode("Null");
+                                                                    struct node* null = createNode("Null",yyval.lin,yyval.col);
                                                                     tmp->next = null;
                                                                     null->next = $7;
                                                                 }
                                                                 else {
-                                                                    struct node* null = createNode("Null");
+                                                                    struct node* null = createNode("Null",yyval.lin,yyval.col);
                                                                     tmp->next = null;
-                                                                    struct node* statlist2 = createNode("StatList");
+                                                                    struct node* statlist2 = createNode("StatList",yyval.lin,yyval.col);
                                                                     null->next = appendNode(statlist2, $7);
                                                                 }
                                                             }
@@ -287,7 +289,7 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                 if(tmp2->next != NULL) {i++;}
                                                                 if(i == 0){tmp->next = $5;}
                                                                 else {
-                                                                    statlist = appendNode(createNode("StatList"), $5);
+                                                                    statlist = appendNode(createNode("StatList",yyval.lin,yyval.col), $5);
                                                                     tmp->next = statlist;
                                                                 }
 
@@ -298,15 +300,15 @@ Statement:   LBRACE StatementList RBRACE                {
                                                                     else {$5->next = $7;}
                                                                 }
                                                                 else {
-                                                                    statlist2 = appendNode(createNode("StatList"), $7);
+                                                                    statlist2 = appendNode(createNode("StatList",yyval.lin,yyval.col), $7);
                                                                     if(statlist) statlist->next = statlist2;
                                                                     else {$5->next = statlist2;}
                                                                 }
                                                             }
 
                                                             else {
-                                                                struct node* A = createNode("Null");
-                                                                struct node* B = createNode("Null");
+                                                                struct node* A = createNode("Null",yyval.lin,yyval.col);
+                                                                struct node* B = createNode("Null",yyval.lin,yyval.col);
                                                                 tmp->next = A;
                                                                 A->next = B;
                                                             }
@@ -315,18 +317,18 @@ Statement:   LBRACE StatementList RBRACE                {
                                                             $$ = if_aux;
                                                         }
          |   WHILE LPAR ArgList RPAR StatementError        {   
-                                                            struct node* while_token = createNode("While");
+                                                            struct node* while_token = createNode("While",yyval.lin,yyval.col);
                                                             struct node* tmp = $3;
 
                                                             while(tmp->next != NULL) tmp = tmp->next;
                                                             if($5) tmp->next = $5;
-                                                            else tmp->next = createNode("Null");
+                                                            else tmp->next = createNode("Null",yyval.lin,yyval.col);
 
                                                             while_token = appendNode(while_token, $3);
                                                             $$ = while_token;
                                                         }
-         |   RETURN ArgList SEMI                        {$$ = appendNode(createNode("Return"), $2);}
-         |   RETURN SEMI                                {$$ = appendNode(createNode("Return"), createNode("Null"));}
+         |   RETURN ArgList SEMI                        {$$ = appendNode(createNode("Return",yyval.lin,yyval.col), $2);}
+         |   RETURN SEMI                                {$$ = appendNode(createNode("Return",yyval.lin,yyval.col), createNode("Null",yyval.lin,yyval.col));}
          |   LBRACE error RBRACE                        {$$ = NULL; t = 1;}
          |   LBRACE RBRACE                              {$$ = NULL;}
          ;
@@ -346,10 +348,12 @@ StatementList: StatementError StatementList  {
 StatementError: Statement   {$$ = $1;}
               | error SEMI  {$$ = NULL; t = 1; /*printf("Statement -> error SEMI\n");*/}
               ;
-ArgList: Expr                               {$$ = $1;}
+ArgList: Expr                               {$1->flag=1; $$ = $1;}
        | ArgList COMMA Expr                 {
                                                 if(debug) printf("Expr: Expr COMMA Expr\n");
-                                                struct node* aux = createNode("Comma");
+                                                struct node* aux = createNode("Comma",yyval.lin,yyval.col);
+                                                $1->flag=1;
+                                                $3->flag=1;
                                                 aux = appendNode(aux, $3);
                                                 $$ = appendNode(aux, $1);
                                             }
@@ -371,129 +375,172 @@ FuncCallArgList: Expr                       {$$ = $1;}
 
 FunctionCall: IdToken LPAR FuncCallArgList RPAR {
                                                     if(debug) printf("FunctionCall: ID LPAR ArgumentsInFunction RPAR\n");
-                                                    struct node* call = createNode("Call");
+                                                    struct node* call = createNode("Call",yyval.lin,yyval.col);
                                                     $1->next = $3;
+                                                    $1->flag = 1;
+                                                    NodePtr* aux= $3;
+                                                    while(aux){
+                                                        aux->flag=1;
+                                                        aux=aux->next;
+                                                    }
                                                     call = appendNode(call, $1);
                                                     $$ = call;
                                                     //printNode($$);
                                                 }
-            | IdToken LPAR RPAR                 {$$ = appendNode(createNode("Call"), $1);}
+            | IdToken LPAR RPAR                 {$1->flag=1; $$ = appendNode(createNode("Call",yyval.lin,yyval.col), $1);}
             | IdToken LPAR error RPAR           {$$ = NULL; t = 1;}
             ;
 Expr:  Expr ASSIGN Expr        {
                                     if(debug) printf("Assignment: ID ASSIGN Expr\n");
-                                    struct node* store = createNode("Store");
+                                    struct node* store = createNode("Store",yyval.lin,yyval.col);
+                                    $1->flag=1;
+                                    $3->flag=1;
                                     store = appendNode(store, $3);
                                     $$ = appendNode(store, $1);
                                     //printNode($$); printNode($$->children); printNode($$->children->next);
                                }
     |  Expr MUL Expr           {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Mul");
+                                struct node* aux = createNode("Mul",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr DIV Expr           {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Div");
+                                struct node* aux = createNode("Div",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr PLUS Expr          {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Add");
+                                struct node* aux = createNode("Add",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr MINUS Expr         {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Sub");
+                                struct node* aux = createNode("Sub",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr MOD Expr           {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Mod");
+                                struct node* aux = createNode("Mod",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr AND Expr           {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("And");
+                                struct node* aux = createNode("And",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr OR Expr            {
                                 if(debug) printf("Expr: Expr OR Expr\n");
-                                struct node* aux = createNode("Or");
+                                struct node* aux = createNode("Or",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr BITWISEAND Expr    {
                                 if(debug) printf("Expr: Expr BITWISEAND Expr\n");
-                                struct node* aux = createNode("BitWiseAnd");
+                                struct node* aux = createNode("BitWiseAnd",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr BITWISEOR Expr     {
                                 if(debug) printf("Expr: Expr BITWISEOR Expr\n");
-                                struct node* aux = createNode("BitWiseOr");
+                                struct node* aux = createNode("BitWiseOr",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr BITWISEXOR Expr    {
                                 if(debug) printf("Expr: Expr BITWISEXOR Expr\n");
-                                struct node* aux = createNode("BitWiseXor");
+                                struct node* aux = createNode("BitWiseXor",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr EQ Expr            {
                                 if(debug) printf("Expr: Expr EQ Expr\n");
-                                struct node* aux = createNode("Eq");
+                                struct node* aux = createNode("Eq",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr NE Expr            {
                                 if(debug) printf("Expr: Expr NE Expr\n");
-                                struct node* aux = createNode("Ne");
+                                struct node* aux = createNode("Ne",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr GE Expr            {
                                 if(debug) printf("Expr: Expr GE Expr\n");
-                                struct node* aux = createNode("Ge");
+                                struct node* aux = createNode("Ge",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr GT Expr            {
                                 if(debug) printf("Expr: Expr GT Expr\n");
-                                struct node* aux = createNode("Gt");
+                                struct node* aux = createNode("Gt",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr LE Expr            {
                                 if(debug) printf("Expr: Expr LE Expr\n");
-                                struct node* aux = createNode("Le");
+                                struct node* aux = createNode("Le",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  Expr LT Expr            {
                                 if(debug) printf("Expr: Expr LT Expr\n");
-                                struct node* aux = createNode("Lt");
+                                struct node* aux = createNode("Lt",yyval.lin,yyval.col);
+                                $1->flag=1;
+                                $3->flag=1;
                                 aux = appendNode(aux, $3);
                                 $$ = appendNode(aux, $1);
                                }
     |  NOT Expr                {
                                 if(debug) printf("Expr: NOT Expr\n");
-                                $$ = appendNode(createNode("Not"), $2);
+                                $2->flag=1;
+                                $$ = appendNode(createNode("Not",yyval.lin,yyval.col), $2);
                                }
     |  PLUS Expr %prec NOT     {
                                 if(debug) printf("Expr: PLUS Expr NOT\n");
-                                $$ = appendNode(createNode("Plus"), $2);
+                                $2->flag=1;
+                                $$ = appendNode(createNode("Plus",yyval.lin,yyval.col), $2);
                                }
     |  MINUS Expr %prec NOT    {
                                 if(debug) printf("Expr: MINUS Expr NOT\n");
-                                $$ = appendNode(createNode("Minus"), $2);
+                                $2->flag=1;
+                                $$ = appendNode(createNode("Minus",yyval.lin,yyval.col), $2);
                                }
     |  FunctionCall            {$$ = $1;}
     |  LPAR ArgList RPAR       {
@@ -509,26 +556,26 @@ Expr:  Expr ASSIGN Expr        {
                                 if(debug) printf("Expr: INTLIT\n");
                                 strcpy(string, "");
                                 sprintf(string, "IntLit(%s)", yyval.str_value);
-                                $$ = createNode(strdup(string));
+                                $$ = createNode(strdup(string),yyval.lin,yyval.col);
                                }
     |  CHRLIT                  {
                                 if(debug) printf("Expr: CHRLIT\n");
                                 sprintf(string, "ChrLit(%s)", yyval.str_value);
-                                $$ = createNode(strdup(string));
+                                $$ = createNode(strdup(string),yyval.lin,yyval.col);
                                }
-    |  REALLIT                 {
+    |  REALLIT                  {
                                 if(debug) printf("Expr: REALLIT\n");
                                 sprintf(string, "RealLit(%s)", yyval.str_value);
-                                $$ = createNode(strdup(string));
+                                $$ = createNode(strdup(string),yyval.lin,yyval.col);
                                }
     ;
 
-Typespec: CHAR      {$$ = createNode("Char");}
-        | INT       {$$ = createNode("Int");}
-        | SHORT     {$$ = createNode("Short");}
-        | DOUBLE    {$$ = createNode("Double");}
-        | VOID      {$$ = createNode("Void");}
+Typespec: CHAR      {$$ = createNode("Char",yyval.lin,yyval.col);}
+        | INT       {$$ = createNode("Int",yyval.lin,yyval.col);}
+        | SHORT     {$$ = createNode("Short",yyval.lin,yyval.col);}
+        | DOUBLE    {$$ = createNode("Double",yyval.lin,yyval.col);}
+        | VOID      {$$ = createNode("Void",yyval.lin,yyval.col);}
         ;
-IdToken:  ID        {strcpy(string, ""); sprintf(string, "Id(%s)", yyval.id_value); $$ = createNode(strdup(string));}
+IdToken:  ID        {strcpy(string, ""); sprintf(string, "Id(%s)", yyval.id_value); $$ = createNode(strdup(string),yyval.lin,yyval.col);}
 
 %%

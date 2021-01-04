@@ -1,6 +1,6 @@
 Terminals unused in grammar
 
-   RESERVED
+    RESERVED
 
 
 Grammar
@@ -111,96 +111,115 @@ Grammar
 
 Terminals, with rules where they appear
 
-$end (0) 0
-error (256) 22 35 40 47 70
-MINUS (258) 52 67
-PLUS (259) 51 66
-MUL (260) 49
-DIV (261) 50
-MOD (262) 53
-BITWISEAND (263) 56
-BITWISEOR (264) 57
-BITWISEXOR (265) 58
-AND (266) 54
-NOT (267) 65
-OR (268) 55
-EQ (269) 59
-NE (270) 60
-LE (271) 63
-GE (272) 61
-LT (273) 64
-GT (274) 62
-CHAR (275) 75
-INT (276) 76
-SHORT (277) 77
-DOUBLE (278) 78
-VOID (279) 79
-IF (280) 30 31
-ELSE (281) 31
-WHILE (282) 32
-RETURN (283) 33 34
-ASSIGN (284) 26 48
-COMMA (285) 18 23 42 44
-LBRACE (286) 9 10 27 35 36
-RBRACE (287) 9 10 27 35 36
-LPAR (288) 16 30 31 32 45 46 47 69 70
-RPAR (289) 16 30 31 32 45 46 47 69 70
-SEMI (290) 15 21 22 28 29 33 34 40
-RESERVED (291)
-ID (292) 80
-CHRLIT (293) 73
-INTLIT (294) 72
-REALLIT (295) 74
+    $end (0) 0
+    error (256) 22 35 40 47 70
+    MINUS <str_value> (258) 52 67
+    PLUS <str_value> (259) 51 66
+    MUL <str_value> (260) 49
+    DIV <str_value> (261) 50
+    MOD <str_value> (262) 53
+    BITWISEAND <str_value> (263) 56
+    BITWISEOR <str_value> (264) 57
+    BITWISEXOR <str_value> (265) 58
+    AND <str_value> (266) 54
+    NOT <str_value> (267) 65
+    OR <str_value> (268) 55
+    EQ <str_value> (269) 59
+    NE <str_value> (270) 60
+    LE <str_value> (271) 63
+    GE <str_value> (272) 61
+    LT <str_value> (273) 64
+    GT <str_value> (274) 62
+    CHAR <str_value> (275) 75
+    INT <str_value> (276) 76
+    SHORT <str_value> (277) 77
+    DOUBLE <str_value> (278) 78
+    VOID <str_value> (279) 79
+    IF <str_value> (280) 30 31
+    ELSE <str_value> (281) 31
+    WHILE <str_value> (282) 32
+    RETURN <str_value> (283) 33 34
+    ASSIGN <str_value> (284) 26 48
+    COMMA <str_value> (285) 18 23 42 44
+    LBRACE <str_value> (286) 9 10 27 35 36
+    RBRACE <str_value> (287) 9 10 27 35 36
+    LPAR <str_value> (288) 16 30 31 32 45 46 47 69 70
+    RPAR <str_value> (289) 16 30 31 32 45 46 47 69 70
+    SEMI <str_value> (290) 15 21 22 28 29 33 34 40
+    RESERVED <str_value> (291)
+    ID <str_value> (292) 80
+    CHRLIT <str_value> (293) 73
+    INTLIT <str_value> (294) 72
+    REALLIT <str_value> (295) 74
 
 
 Nonterminals, with rules where they appear
 
-$accept (41)
-    on left: 0
-Program (42)
-    on left: 1, on right: 0
-FunctionsAndDeclarations (43)
-    on left: 2 3 4 5 6 7, on right: 1 2 3 4
-FunctionDefinition (44)
-    on left: 8, on right: 2 5
-FunctionBody (45)
-    on left: 9 10, on right: 8
-DeclarationsAndStatements (46)
-    on left: 11 12 13 14, on right: 9 11 12
-FunctionDeclaration (47)
-    on left: 15, on right: 3 6
-FunctionDeclarator (48)
-    on left: 16, on right: 8 15
-ParameterList (49)
-    on left: 17 18, on right: 16 18
-ParameterDeclaration (50)
-    on left: 19 20, on right: 17 18
-Declaration (51)
-    on left: 21 22, on right: 4 7 12 13
-DeclarationAux (52)
-    on left: 23 24, on right: 21 23
-Declarator (53)
-    on left: 25 26, on right: 23 24
-Statement (54)
-    on left: 27 28 29 30 31 32 33 34 35 36, on right: 11 14 39
-StatementList (55)
-    on left: 37 38, on right: 27 37
-StatementError (56)
-    on left: 39 40, on right: 30 31 32 37 38
-ArgList (57)
-    on left: 41 42, on right: 28 30 31 32 33 42 69
-FuncCallArgList (58)
-    on left: 43 44, on right: 44 45
-FunctionCall (59)
-    on left: 45 46 47, on right: 68
-Expr (60)
-    on left: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65
-    66 67 68 69 70 71 72 73 74, on right: 26 41 42 43 44 48 49 50 51
-    52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67
-Typespec (61)
-    on left: 75 76 77 78 79, on right: 8 15 19 20 21
-IdToken (62)
-    on left: 80, on right: 16 20 25 26 45 46 47 71
+    $accept (41)
+        on left: 0
+    Program <node> (42)
+        on left: 1
+        on right: 0
+    FunctionsAndDeclarations <node> (43)
+        on left: 2 3 4 5 6 7
+        on right: 1 2 3 4
+    FunctionDefinition <node> (44)
+        on left: 8
+        on right: 2 5
+    FunctionBody <node> (45)
+        on left: 9 10
+        on right: 8
+    DeclarationsAndStatements <node> (46)
+        on left: 11 12 13 14
+        on right: 9 11 12
+    FunctionDeclaration <node> (47)
+        on left: 15
+        on right: 3 6
+    FunctionDeclarator <node> (48)
+        on left: 16
+        on right: 8 15
+    ParameterList <node> (49)
+        on left: 17 18
+        on right: 16 18
+    ParameterDeclaration <node> (50)
+        on left: 19 20
+        on right: 17 18
+    Declaration <node> (51)
+        on left: 21 22
+        on right: 4 7 12 13
+    DeclarationAux <node> (52)
+        on left: 23 24
+        on right: 21 23
+    Declarator <node> (53)
+        on left: 25 26
+        on right: 23 24
+    Statement <node> (54)
+        on left: 27 28 29 30 31 32 33 34 35 36
+        on right: 11 14 39
+    StatementList <node> (55)
+        on left: 37 38
+        on right: 27 37
+    StatementError <node> (56)
+        on left: 39 40
+        on right: 30 31 32 37 38
+    ArgList <node> (57)
+        on left: 41 42
+        on right: 28 30 31 32 33 42 69
+    FuncCallArgList <node> (58)
+        on left: 43 44
+        on right: 44 45
+    FunctionCall <node> (59)
+        on left: 45 46 47
+        on right: 68
+    Expr <node> (60)
+        on left: 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+        on right: 26 41 42 43 44 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67
+    Typespec <node> (61)
+        on left: 75 76 77 78 79
+        on right: 8 15 19 20 21
+    IdToken <node> (62)
+        on left: 80
+        on right: 16 20 25 26 45 46 47 71
 
 
 State 0

@@ -4,13 +4,16 @@
     #include "y.tab.h"
     #include <string.h>
     #include "functions.h"
+    #include "semantics.h"
     int column = 1; int comment_start_column = 1;
     int line = 1; int comment_start_line = 1;
     int e1 = 1;         // 1 -> error mode ligado, 0 -> desligado
     int e2 = 0;
     int t = 0;
+    int s = 0;
 
     NodePtr* program = NULL;
+    symtab* SYMTAB= NULL;
 
 %}
 
@@ -74,51 +77,51 @@ RESERVED    auto|break|const|continue|do|enum|extern|float|for|goto|register|lon
 <COMMENT_2>\r|\n|(\r\n)     {line++; column = 1; BEGIN 0;}
 
 
-{RESERVED}             {if(!e1) printf("RESERVED(%s)\n", yytext); column += yyleng; return RESERVED;}
-{MINUS}                {if(!e1) printf("MINUS\n"); column += yyleng; return MINUS;}
-{PLUS}                 {if(!e1) printf("PLUS\n"); column += yyleng; return PLUS;}
-{MUL}                  {if(!e1) printf("MUL\n"); column += yyleng; return MUL;}
-{CHAR}                 {if(!e1) printf("CHAR\n"); column += yyleng; return CHAR;}
-{ELSE}                 {if(!e1) printf("ELSE\n"); column += yyleng; return ELSE;}
-{WHILE}                {if(!e1) printf("WHILE\n"); column += yyleng; return WHILE;}
-{IF}                   {if(!e1) printf("IF\n"); column += yyleng; return IF;}
-{INT}                  {if(!e1) printf("INT\n"); column += yyleng; return INT;}
-{SHORT}                {if(!e1) printf("SHORT\n"); column += yyleng; return SHORT;}
-{DOUBLE}               {if(!e1) printf("DOUBLE\n"); column += yyleng; return DOUBLE;}
-{RETURN}               {if(!e1) printf("RETURN\n"); column += yyleng; return RETURN;}
-{VOID}                 {if(!e1) printf("VOID\n"); column += yyleng; return VOID;}
-{BITWISEAND}           {if(!e1) printf("BITWISEAND\n"); column += yyleng; return BITWISEAND;}
-{BITWISEOR}            {if(!e1) printf("BITWISEOR\n"); column += yyleng; return BITWISEOR;}
-{BITWISEXOR}           {if(!e1) printf("BITWISEXOR\n"); column += yyleng; return BITWISEXOR;}
-{AND}                  {if(!e1) printf("AND\n"); column += yyleng; return AND;}
-{ASSIGN}               {if(!e1) printf("ASSIGN\n"); column += yyleng; return ASSIGN;}
-{COMMA}                {if(!e1) printf("COMMA\n"); column += yyleng; return COMMA;}
-{DIV}                  {if(!e1) printf("DIV\n"); column += yyleng; return DIV;}
-{EQ}                   {if(!e1) printf("EQ\n"); column += yyleng; return EQ;}
-{GE}                   {if(!e1) printf("GE\n"); column += yyleng; return GE;}
-{GT}                   {if(!e1) printf("GT\n"); column += yyleng; return GT;}
-{LBRACE}               {if(!e1) printf("LBRACE\n"); column += yyleng; return LBRACE;}
-{LE}                   {if(!e1) printf("LE\n"); column += yyleng; return LE;}
-{LPAR}                 {if(!e1) printf("LPAR\n"); column += yyleng; return LPAR;}
-{LT}                   {if(!e1) printf("LT\n"); column += yyleng; return LT;}
-{MOD}                  {if(!e1) printf("MOD\n"); column += yyleng; return MOD;}
-{NE}                   {if(!e1) printf("NE\n"); column += yyleng; return NE;}
-{NOT}                  {if(!e1) printf("NOT\n"); column += yyleng; return NOT;}
-{OR}                   {if(!e1) printf("OR\n"); column += yyleng; return OR;}
-{RBRACE}               {if(!e1) printf("RBRACE\n"); column += yyleng; return RBRACE;}
-{RPAR}                 {if(!e1) printf("RPAR\n"); column += yyleng; return RPAR;}
-{SEMI}                 {if(!e1) printf("SEMI\n"); column += yyleng; return SEMI;}
-{ID}                   {if(!e1) printf("ID(%s)\n", yytext); column += yyleng; yylval.id_value = strdup(yytext); return ID;}
-{INTLIT}               {if(!e1) printf("INTLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return INTLIT;}
-{REALLIT}              {if(!e1) printf("REALLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return REALLIT;}
+{RESERVED}             {if(!e1) printf("RESERVED(%s)\n", yytext); yylval.lin=line; yylval.col=column; column += yyleng; return RESERVED;}
+{MINUS}                {if(!e1) printf("MINUS\n"); yylval.lin=line; yylval.col=column; column += yyleng; return MINUS;}
+{PLUS}                 {if(!e1) printf("PLUS\n"); yylval.lin=line; yylval.col=column; column += yyleng; return PLUS;}
+{MUL}                  {if(!e1) printf("MUL\n"); yylval.lin=line; yylval.col=column; column += yyleng; return MUL;}
+{CHAR}                 {if(!e1) printf("CHAR\n"); yylval.lin=line; yylval.col=column; column += yyleng; return CHAR;}
+{ELSE}                 {if(!e1) printf("ELSE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return ELSE;}
+{WHILE}                {if(!e1) printf("WHILE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return WHILE;}
+{IF}                   {if(!e1) printf("IF\n"); yylval.lin=line; yylval.col=column; column += yyleng; return IF;}
+{INT}                  {if(!e1) printf("INT\n"); yylval.lin=line; yylval.col=column; column += yyleng; return INT;}
+{SHORT}                {if(!e1) printf("SHORT\n"); yylval.lin=line; yylval.col=column; column += yyleng; return SHORT;}
+{DOUBLE}               {if(!e1) printf("DOUBLE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return DOUBLE;}
+{RETURN}               {if(!e1) printf("RETURN\n"); yylval.lin=line; yylval.col=column; column += yyleng; return RETURN;}
+{VOID}                 {if(!e1) printf("VOID\n"); yylval.lin=line; yylval.col=column; column += yyleng; return VOID;}
+{BITWISEAND}           {if(!e1) printf("BITWISEAND\n"); yylval.lin=line; yylval.col=column; column += yyleng; return BITWISEAND;}
+{BITWISEOR}            {if(!e1) printf("BITWISEOR\n"); yylval.lin=line; yylval.col=column; column += yyleng; return BITWISEOR;}
+{BITWISEXOR}           {if(!e1) printf("BITWISEXOR\n"); yylval.lin=line; yylval.col=column; column += yyleng; return BITWISEXOR;}
+{AND}                  {if(!e1) printf("AND\n"); yylval.lin=line; yylval.col=column; column += yyleng; return AND;}
+{ASSIGN}               {if(!e1) printf("ASSIGN\n"); yylval.lin=line; yylval.col=column; column += yyleng; return ASSIGN;}
+{COMMA}                {if(!e1) printf("COMMA\n"); yylval.lin=line; yylval.col=column; column += yyleng; return COMMA;}
+{DIV}                  {if(!e1) printf("DIV\n"); yylval.lin=line; yylval.col=column; column += yyleng; return DIV;}
+{EQ}                   {if(!e1) printf("EQ\n"); yylval.lin=line; yylval.col=column; column += yyleng; return EQ;}
+{GE}                   {if(!e1) printf("GE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return GE;}
+{GT}                   {if(!e1) printf("GT\n"); yylval.lin=line; yylval.col=column; column += yyleng; return GT;}
+{LBRACE}               {if(!e1) printf("LBRACE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return LBRACE;}
+{LE}                   {if(!e1) printf("LE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return LE;}
+{LPAR}                 {if(!e1) printf("LPAR\n"); yylval.lin=line; yylval.col=column; column += yyleng; return LPAR;}
+{LT}                   {if(!e1) printf("LT\n"); yylval.lin=line; yylval.col=column; column += yyleng; return LT;}
+{MOD}                  {if(!e1) printf("MOD\n"); yylval.lin=line; yylval.col=column; column += yyleng; return MOD;}
+{NE}                   {if(!e1) printf("NE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return NE;}
+{NOT}                  {if(!e1) printf("NOT\n"); yylval.lin=line; yylval.col=column; column += yyleng; return NOT;}
+{OR}                   {if(!e1) printf("OR\n"); yylval.lin=line; yylval.col=column; column += yyleng; return OR;}
+{RBRACE}               {if(!e1) printf("RBRACE\n"); yylval.lin=line; yylval.col=column; column += yyleng; return RBRACE;}
+{RPAR}                 {if(!e1) printf("RPAR\n"); yylval.lin=line; yylval.col=column; column += yyleng; return RPAR;}
+{SEMI}                 {if(!e1) printf("SEMI\n"); yylval.lin=line; yylval.col=column; column += yyleng; return SEMI;}
+{ID}                   {if(!e1) printf("ID(%s)\n", yytext); yylval.lin=line; yylval.col=column; column += yyleng; yylval.id_value = strdup(yytext); return ID;}
+{INTLIT}               {if(!e1) printf("INTLIT(%s)\n", yytext); yylval.lin=line; yylval.col=column; column += yyleng; yylval.str_value = strdup(yytext); return INTLIT;}
+{REALLIT}              {if(!e1) printf("REALLIT(%s)\n", yytext); yylval.lin=line; yylval.col=column; column += yyleng; yylval.str_value = strdup(yytext); return REALLIT;}
 
     /* TRATAMENTO DE CHRLIT */
-{CHRLIT}               {if(!e1) printf("CHRLIT(%s)\n", yytext); column += yyleng; yylval.str_value = strdup(yytext); return CHRLIT;}
+{CHRLIT}               {if(!e1) printf("CHRLIT(%s)\n", yytext); yylval.lin=line; yylval.col=column; column += yyleng; yylval.str_value = strdup(yytext); return CHRLIT;}
 \'([^\n\r\'\\]|\\.)*\' {printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext); column += yyleng;}
 \'[^\n\r\']*\'?        {printf("Line %d, col %d: unterminated char constant\n", line, column);}
 
-" "|"\t"|"\f"          {column += yyleng;}
-"\n"|"\r"|"\r\n"       {line++; column = 1;}
+" "|"\t"|"\f"          {yylval.lin=line; yylval.col=column; column += yyleng;}
+"\n"|"\r"|"\r\n"       {yylval.lin=line; yylval.col=column; line++; column = 1;}
 .                      {printf("Line %d, col %d: illegal character (%c)\n", line, column, *yytext); column += yyleng;}
 
 %%
@@ -157,6 +160,16 @@ int main(int argc, char *argv[]) {
             e2 = 1;
             yyparse();
             while(yylex());
+        }
+        else if(strcmp(argv[1],"-s")==0){
+            yyparse();
+            if(program){
+                SYMTAB=progSymTab(program);
+                program=anotAST(program,SYMTAB,NULL);
+                printTable(SYMTAB);
+                printTree(program);
+            }
+            
         }
         else {yyparse();}
     }
